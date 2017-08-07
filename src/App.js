@@ -1,34 +1,14 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import * as firebase from 'firebase';
-import TeachingFellowPage from './pages/TeachingFellowPage';
-import LeadInstructorPage from './pages/LeadInstructorPage';
-import StudentPage from './pages/StudentPage';
-import HomePage from './pages/HomePage';
+import UnauthorizedUserPage from './pages/UnauthorizedUserPage';
 import NotFoundPage from './pages/NotFoundPage';
+import TeachingFellowPage from './pages/TeachingFellowPage';
+import DashboardPage from './pages/DashboardPage';
+import StudentPage from './pages/StudentPage';
+import WelcomePage from './pages/WelcomePage';
 import NavBar from './components/NavBar';
-
-const Main = (props) => {
-  const user = props.user;
-  if (user) {
-    return (
-      <Switch>
-        <Route exact path='/' render={(p) => (
-          <HomePage {...p} user={user} authLoaded={props.authLoaded} />
-        )} />
-        <Route path='/lead' component={LeadInstructorPage} />
-        <Route path='/tf/:id' component={TeachingFellowPage} />
-        <Route path='/student/:id' component={StudentPage} />
-        <Route path='/404/' component={NotFoundPage} />
-        <Redirect to='/404' />
-      </Switch>
-    );
-  } else {
-    return (
-      <HomePage authLoaded={props.authLoaded} />
-    );
-  }
-}
+import { Dimmer, Loader } from 'semantic-ui-react';
 
 class App extends Component {
   constructor() {
@@ -40,45 +20,64 @@ class App extends Component {
     this.auth = firebase.auth();
     this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
   }
-  addUserToDatabase(userId, name, email, photoURL) {
-    const newUser = {
-      displayName: name,
-      email: email,
-      photoURL: photoURL,
-      uid: userId,
-      role: 'tf'
-    };
-    firebase.database().ref('users/' + userId).set(newUser);
-    return newUser;
-  }
+
   onAuthStateChanged(user) {
-    console.log('Auth State Changed', user);
-    this.setState({
-      authLoaded: true
-    })
+
+    // if successfully logged in via Google, get the user object from the database
     if (user) {
-      firebase.database().ref('users/' + user.uid).once('value')
-        .then(userFromDb => {
-          if (userFromDb.val()) {
-            this.setState({ user: userFromDb.val() });
+      firebase.database().ref(`users/${user.uid}`).once('value')
+        .then(snapshot => {
+          if (snapshot.val()) {
+            // set user as Google info + database info
+            this.setState({ user: Object.assign(user, snapshot.val()) });
           } else {
-            const newUser = this.addUserToDatabase(user.uid, user.displayName, user.email, user.photoURL);
-            this.setState({ user: newUser });
+            this.setState({
+              user: user
+            });
           }
+          this.setState({ authLoaded: true })
         });
-    } else {
+    }
+
+    // user is not signed in
+    else {
       this.setState({
-        user: null
+        user: null,
+        authLoaded: true
       });
     }
   }
+
+  pages() {
+    return (
+      <Switch>
+        <Route exact path='/' component={DashboardPage} />
+        <Route path='/forum/:id' component={TeachingFellowPage} />
+        <Route path='/student/:id' component={StudentPage} />
+        <Route path='/404' component={NotFoundPage} />
+        <Redirect to='/404' />
+      </Switch>
+    );
+  }
+
   render() {
     return (
       <div>
-        <Route render={(props) => (
-          <NavBar {...props} user={this.state.user} auth={this.auth} />
-        )} />
-        <Main user={this.state.user} authLoaded={this.state.authLoaded} />
+        {!this.state.authLoaded &&
+          <Dimmer active>
+            <Loader />
+          </Dimmer>
+        }
+        <NavBar user={this.state.user} />
+        {this.state.authLoaded && this.state.user && !this.state.user.role &&
+          <UnauthorizedUserPage />
+        }
+        {this.state.authLoaded && !this.state.user &&
+          <WelcomePage />
+        }
+        {this.state.user && this.state.user.role &&
+          this.pages()
+        }
       </div>
     );
   }

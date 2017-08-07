@@ -3,13 +3,16 @@ import * as firebase from 'firebase';
 import { Button, Image } from 'semantic-ui-react';
 
 class UserLogin extends Component {
+
   signIn() {
     var provider = new firebase.auth.GoogleAuthProvider();
-    this.props.auth.signInWithPopup(provider);
+    firebase.auth().signInWithPopup(provider);
   }
+
   signOut() {
-    this.props.auth.signOut();
+    firebase.auth().signOut();
   }
+
   render() {
     if (this.props.user) {
       return (

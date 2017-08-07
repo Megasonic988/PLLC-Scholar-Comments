@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Header, Divider, List, Rating } from 'semantic-ui-react';
 import * as firebase from 'firebase';
 
-class LeadInstructorPage extends Component {
+class DashboardPage extends Component {
   constructor() {
     super();
     this.state = {
@@ -88,4 +88,4 @@ class LeadInstructorPage extends Component {
   }
 }
 
-export default LeadInstructorPage;
+export default DashboardPage;

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Menu, Header, Icon, Image } from 'semantic-ui-react';
 import UserLogin from './UserLogin';
 import pllcLogoUrl from '../assets/pllc.png';
+import { withRouter } from 'react-router-dom';
 
 class NavBar extends Component {
   constructor() {
@@ -10,9 +11,11 @@ class NavBar extends Component {
       visible: true
     };
   }
+  
   redirectToHome() {
     this.props.history.push('/');
   }
+
   render() {
     return (
       <div>
@@ -28,7 +31,7 @@ class NavBar extends Component {
           </Menu.Item>
           <Menu.Menu position="right">
             <Menu.Item active={false} name="userlogin">
-              <UserLogin user={this.props.user} auth={this.props.auth}/>
+              <UserLogin user={this.props.user} />
             </Menu.Item>
           </Menu.Menu>
         </Menu>
@@ -36,5 +39,7 @@ class NavBar extends Component {
     );
   }
 }
+
+NavBar = withRouter(NavBar);
 
 export default NavBar;
