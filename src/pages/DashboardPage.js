@@ -1,90 +1,102 @@
 import React, { Component } from 'react';
-import { Header, Divider, List, Rating } from 'semantic-ui-react';
+import { Header, Divider, List, Rating, Dimmer, Loader, Grid } from 'semantic-ui-react';
 import * as firebase from 'firebase';
+import * as FirebaseHelper from '../FirebaseHelper';
+import ForumList from '../components/ForumList';
+import StudentList from '../components/StudentList';
+import ForumForm from '../components/ForumForm';
 
 class DashboardPage extends Component {
   constructor() {
     super();
     this.state = {
       forums: [],
-      lowRatingStudents: []
+      warningStudents: [],
+      loading: true
     };
-    firebase.database().ref('forums/').on('child_added', snapshot => {
-      const forums = JSON.parse(JSON.stringify(this.state.forums));
-      forums.push(Object.assign(snapshot.val(), { id: snapshot.getKey() }));
-      this.setState({
-        forums: forums
-      });
-    });
-    firebase.database().ref('students/').on('child_added', snapshot => {
-      if (snapshot.val().rating <= 2) {
-        const lowRatingStudents = JSON.parse(JSON.stringify(this.state.lowRatingStudents));
-        lowRatingStudents.push(Object.assign(snapshot.val(), { id: snapshot.getKey() }));
-        this.setState({
-          lowRatingStudents: lowRatingStudents
-        });
-      }
-    });
+
+    this.getForumsFromFirebase();
+    this.getWarningStudents();
   }
+
+  getForumsFromFirebase() {
+    firebase
+      .database()
+      .ref('forums')
+      .on('value', snapshot => {
+        this.setState({
+          forums: FirebaseHelper.snapshotToArray(snapshot),
+          loading: false
+        });
+      });
+  }
+
+  getWarningStudents() {
+    firebase
+      .database()
+      .ref('students')
+      .orderByChild('rating')
+      .endAt(2)
+      .on('value', snapshot => {
+        this.setState({
+          warningStudents: FirebaseHelper.snapshotToArray(snapshot) || []
+        });
+      });
+  }
+
+  componentWillUnmount() {
+    firebase.database().ref('students').off();
+    firebase.database().ref('forums').off();
+  }
+
   getForumsInYear(year) {
-    return this.state.forums.filter(f => f.year === String(year)).sort((f1, f2) => {
+    const forumsInYear = this.state.forums.filter(f => f.year === String(year))
+    const forumsInYearSortedByLetter = forumsInYear.sort((f1, f2) => {
       if (f1.letter < f2.letter) return -1;
       else if (f1.letter > f2.letter) return 1;
       else return 0;
     });
+    return forumsInYearSortedByLetter;
   }
-  getForumListItem(forum) {
-    return (
-      <List.Item key={forum.tf}>
-        <List.Icon name='users' size='large' verticalAlign='middle' />
-        <List.Content>
-          <List.Header as='a' href={'/tf/' + forum.tf}>
-            Forum {forum.year + forum.letter}
-          </List.Header>
-          <List.Description>
-            {forum.name}
-          </List.Description>
-        </List.Content>
-      </List.Item>
-    );
+
+  userHasCreatedForum() {
+    for (let i = 0; i < this.state.forums.length; i++) {
+      const forum = this.state.forums[i];
+      if (forum.createdBy === this.props.user.uid) {
+        return true;
+      }
+    }
+    return false;
   }
+
   render() {
-    return (
-      <div style={{ padding: '40px' }}>
-        <Header as='h1'>First Year Forums</Header>
-        <Divider />
-        <List divided relaxed>
-          {this.getForumsInYear(1).map(forum => this.getForumListItem(forum))}
-        </List>
-        <Header as='h1'>Second Year Forums</Header>
-        <Divider />
-        <List divided relaxed>
-          {this.getForumsInYear(2).map(forum => this.getForumListItem(forum))}
-        </List>
-        <Divider />
-        <Header as='h1'>Low-Rated Students</Header>
-        <List divided relaxed>
-          {this.state.lowRatingStudents.map((student, index) => (
-            <List.Item key={index}>
-              <List.Icon name='user' size='large' verticalAlign='middle' />
-              <List.Content>
-                <List.Header as='a' href={'/student/' + student.id}>
-                  {student.name}
-                </List.Header>
-                <List.Description>
-                  <Rating
-                    size='small'
-                    disabled
-                    icon='star'
-                    rating={student.rating}
-                    maxRating={5} />
-                </List.Description>
-              </List.Content>
-            </List.Item>
-          ))}
-        </List>
-      </div>
-    );
+    if (this.state.loading) {
+      return (
+        <Dimmer active>
+          <Loader />
+        </Dimmer>
+      );
+    }
+    else {
+      return (
+        <div style={{ padding: '40px' }}>
+          {!this.userHasCreatedForum() &&
+            <Grid centered>
+              <ForumForm createdBy={this.props.user.uid} />
+            </Grid>
+          }
+          <Header as='h1'>First Year Forums</Header>
+          <Divider />
+          <ForumList forums={this.getForumsInYear(1)} />
+          <Header as='h1'>Second Year Forums</Header>
+          <Divider />
+          <ForumList forums={this.getForumsInYear(2)} />
+          <Header as='h1'>Warning Students</Header>
+          <Divider />
+          <StudentList students={this.state.warningStudents} />
+        </div>
+      );
+    }
   }
 }
 

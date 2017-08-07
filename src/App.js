@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { Dimmer, Loader } from 'semantic-ui-react';
 import * as firebase from 'firebase';
+
 import UnauthorizedUserPage from './pages/UnauthorizedUserPage';
 import NotFoundPage from './pages/NotFoundPage';
-import TeachingFellowPage from './pages/TeachingFellowPage';
+import WelcomePage from './pages/WelcomePage';
+import ForumPage from './pages/ForumPage';
 import DashboardPage from './pages/DashboardPage';
 import StudentPage from './pages/StudentPage';
-import WelcomePage from './pages/WelcomePage';
 import NavBar from './components/NavBar';
-import { Dimmer, Loader } from 'semantic-ui-react';
 
 class App extends Component {
   constructor() {
@@ -19,6 +20,27 @@ class App extends Component {
     };
     this.auth = firebase.auth();
     this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
+  }
+
+  routeWithUserProps(path, Component) {
+    return (
+      <Route exact path={path} render={(props) => (
+        <Component user={this.state.user} />
+      )} />
+    );
+  }
+
+  pages() {
+    return (
+      <Switch>
+        {this.routeWithUserProps('/', DashboardPage)}
+        {this.routeWithUserProps('/forums/:id', ForumPage)}
+        {this.routeWithUserProps('/students', StudentPage)}
+        {/* <Route exact path='/comments/:id' component={CommentPage} /> */}
+        {this.routeWithUserProps('/404', NotFoundPage)}
+        <Redirect to='/404' />
+      </Switch>
+    );
   }
 
   onAuthStateChanged(user) {
@@ -46,18 +68,6 @@ class App extends Component {
         authLoaded: true
       });
     }
-  }
-
-  pages() {
-    return (
-      <Switch>
-        <Route exact path='/' component={DashboardPage} />
-        <Route path='/forum/:id' component={TeachingFellowPage} />
-        <Route path='/student/:id' component={StudentPage} />
-        <Route path='/404' component={NotFoundPage} />
-        <Redirect to='/404' />
-      </Switch>
-    );
   }
 
   render() {
