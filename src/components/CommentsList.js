@@ -69,7 +69,8 @@ class CommentsList extends Component {
     firebase.database().ref('comments')
       .orderByChild('student')
       .equalTo(this.props.student.id)
-      .on('child_added', snapshot => {
+      .on('value', snapshot => {
+        console.log(snapshot.val())
         const comments = JSON.parse(JSON.stringify(this.state.comments));
         comments.push(snapshot.val());
         comments.sort((c1, c2) => {
@@ -97,7 +98,7 @@ class CommentsList extends Component {
         </Grid.Row>
         <Grid.Row style={{paddingLeft: '15%', paddingRight: '15%'}}>
           {this.state.comments.map((comment, index) => (
-            <Accordion styled fluid>
+            <Accordion styled fluid key={index}>
               <Accordion.Title>
                 <Icon name='dropdown' />
                 Comment on {moment(comment.date).format('MMMM Do YYYY')}{' '}|{' '}

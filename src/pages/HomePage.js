@@ -4,7 +4,6 @@ import { Loader } from 'semantic-ui-react';
 
 class HomePage extends Component {
   render() {
-    console.log(this.props.authLoaded)
     if (!this.props.authLoaded) {
       return (
         <div style={{ paddingTop: '30px' }}>

@@ -35,7 +35,7 @@ class LeadInstructorPage extends Component {
   }
   getForumListItem(forum) {
     return (
-      <List.Item>
+      <List.Item key={forum.tf}>
         <List.Icon name='users' size='large' verticalAlign='middle' />
         <List.Content>
           <List.Header as='a' href={'/tf/' + forum.tf}>

@@ -1,32 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Card, Grid, Rating, Header, Icon, Divider, Modal, Form, Input } from 'semantic-ui-react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, Link } from 'react-router-dom';
 import StudentFormPage from './StudentFormPage';
 import * as firebase from 'firebase';
-
-const StudentCard = (props) => {
-  console.log(props);
-  return (
-    <Card href={'/student/' + props.id}>
-      <Card.Content>
-        <Card.Header>
-          {props.name}
-        </Card.Header>
-        <Card.Meta>
-          {props.CCID}
-        </Card.Meta>
-      </Card.Content>
-      <Card.Content>
-        <Rating
-          size='huge'
-          disabled
-          icon='star'
-          defaultRating={props.rating}
-          maxRating={5} />
-      </Card.Content>
-    </Card>
-  );
-}
+import StudentCard from '../components/StudentCard';
 
 class AddForumModal extends Component {
   constructor() {
