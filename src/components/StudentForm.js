@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Container, Modal } from 'semantic-ui-react';
+import { Button, Form, Modal } from 'semantic-ui-react';
 import * as firebase from 'firebase';
 
 class StudentForm extends Component {
@@ -25,7 +25,10 @@ class StudentForm extends Component {
       name: this.state.name,
       CCID: this.state.CCID,
       forum: this.props.forum,
-      rating: 3,
+      rating: 5,
+    });
+    this.setState({
+      open: false
     });
   }
 

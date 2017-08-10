@@ -1,122 +1,100 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import { Button, Form, Modal, TextArea, Grid, Accordion, Icon, Rating } from 'semantic-ui-react';
+import * as FirebaseHelper from '../FirebaseHelper';
+import { Feed, Icon, Image, Rating, Label } from 'semantic-ui-react';
 import moment from 'moment';
+import Editor from 'react-medium-editor';
+import 'medium-editor/dist/css/medium-editor.css';
+import 'medium-editor/dist/css/themes/bootstrap.css';
 
-class AddStudentCommentModal extends Component {
+import FollowUpForm from './FollowUpForm';
+
+class CommentFeedEvent extends React.Component {
   constructor() {
     super();
     this.state = {
-      text: null,
-      open: false
+      author: null
     };
   }
-  addStudentComment() {
-    this.setState({
-      open: false
-    });
-    firebase.database().ref('comments').push({
-      text: this.state.text,
-      date: new Date().toISOString(),
-      student: this.props.student.id,
-      rating: this.props.student.rating
-    });
+
+  componentWillMount() {
+    this.getAuthorOfCommentFromFirebase();
   }
-  handleChange(event) {
-    const value = event.target.value;
-    const name = event.target.name;
-    this.setState({
-      [name]: value
-    });
+
+  getAuthorOfCommentFromFirebase() {
+    const authorId = this.props.comment.createdBy;
+    firebase
+      .database()
+      .ref(`users/${authorId}`)
+      .once('value', snapshot => {
+        this.setState({
+          author: FirebaseHelper.snapshotWithUid(snapshot)
+        });
+      });
   }
+
+  removeAttentionRequired() {
+    console.log('remove')
+  }
+
   render() {
+    if (!this.state.author) {
+      return (
+        <div></div>
+      );
+    }
+
     return (
-      <Modal
-        trigger={
-          <Button
-            onClick={() => this.setState({ open: true })}
-            content='Add Comment'
-            color='green'
-            icon='edit'
-            label={{ as: 'a', color: 'green', pointing: 'left', basic: true, content: this.props.numComments }} />
-        }
-        open={this.state.open}>
-        <Modal.Header>
-          Add New Comment for {this.props.student.name.split(' ')[0]}
-        </Modal.Header>
-        <Modal.Content>
-          <Form>
-            <TextArea rows={15} name='text' onChange={this.handleChange.bind(this)} placeholder='Write a comment...' />
-          </Form>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button negative onClick={() => this.setState({ open: false })}>
-            Cancel
-          </Button>
-          <Button onClick={() => this.addStudentComment()} positive icon='edit' labelPosition='left' content='Submit' />
-        </Modal.Actions>
-      </Modal>
+      <Feed.Event>
+        <Feed.Label>
+          <Image size='mini' shape='circular' src={this.state.author.photoURL} />
+        </Feed.Label>
+        <Feed.Content>
+          <Feed.Summary>
+            <Feed.User>{this.state.author.name}</Feed.User> wrote <a>{this.props.comment.title}</a>
+            <Feed.Date>{moment(this.props.comment.dateCreated).format('MMM Do YYYY, h:mm a')}</Feed.Date>
+            {this.props.comment.attentionRequired &&
+              <Label
+                as='a'
+                color='red'
+                size='mini'
+                tag
+                style={{left: '6px'}}
+                onClick={this.removeAttentionRequired.bind(this)}
+              >
+                Attention Required
+                <Icon name='delete' />
+              </Label>
+            }
+          </Feed.Summary>
+          <Feed.Extra text>
+            <div dangerouslySetInnerHTML={{ __html: this.props.comment.text }} />
+          </Feed.Extra>
+          <Feed.Meta>
+            <FollowUpForm 
+              comment={this.props.comment} 
+              user={this.props.user}
+            />
+          </Feed.Meta>
+        </Feed.Content>
+      </Feed.Event>
+
     );
   }
 }
 
-class CommentsList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      comments: []
-    };
-    firebase.database().ref('comments')
-      .orderByChild('student')
-      .equalTo(this.props.student.id)
-      .on('value', snapshot => {
-        console.log(snapshot.val())
-        const comments = JSON.parse(JSON.stringify(this.state.comments));
-        comments.push(snapshot.val());
-        comments.sort((c1, c2) => {
-          if (c1.date > c2.date) {
-            return -1;
-          } else if (c1.date < c2.date) {
-            return 1;
-          } else {
-            return 1;
-          }
-        });
-        this.setState({
-          comments: comments
-        });
-      });
-  }
-  componentWillUnmount() {
-    firebase.database().ref('comments').off();
-  }
+class CommentsList extends React.Component {
   render() {
     return (
-      <Grid>
-        <Grid.Row centered>
-          <AddStudentCommentModal student={this.props.student} numComments={this.state.comments.length} />
-        </Grid.Row>
-        <Grid.Row style={{paddingLeft: '15%', paddingRight: '15%'}}>
-          {this.state.comments.map((comment, index) => (
-            <Accordion styled fluid key={index}>
-              <Accordion.Title>
-                <Icon name='dropdown' />
-                Comment on {moment(comment.date).format('MMMM Do YYYY')}{' '}|{' '}
-                <Rating
-                  key={index}
-                  size='small'
-                  disabled
-                  icon='star'
-                  rating={comment.rating}
-                  maxRating={5} />
-              </Accordion.Title>
-              <Accordion.Content>
-                <p>{comment.text}</p>
-              </Accordion.Content>
-            </Accordion>
-          ))}
-        </Grid.Row>
-      </Grid>
+      <Feed>
+        {this.props.comments.map((comment, index) => (
+          <CommentFeedEvent 
+            comment={comment} 
+            key={index} 
+            user={this.props.user}
+          />
+        ))}
+      </Feed>
     );
   }
 }

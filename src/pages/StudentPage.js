@@ -1,88 +1,167 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import CommentsList from '../components/CommentsList';
-import { Grid, Header, Icon, Divider, Rating } from 'semantic-ui-react';
+import * as FirebaseHelper from '../FirebaseHelper';
+import { Grid, Header, Icon, Rating, Dimmer, Loader, Segment, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+
+import CommentForm from '../components/CommentForm';
+import CommentsList from '../components/CommentsList';
+
 
 class StudentPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      student: {
-        id: this.props.match.params.id,
-        name: 'No Student Found',
-        rating: 3
-      },
-      forum: null
+      student: null,
+      forum: null,
+      loading: true,
+      comments: [],
+      commentAuthors: []
     };
-    const id = this.state.student.id;
-    firebase.database().ref('students/' + id).once('value', snapshot => {
-      if (!snapshot.val()) return;
-      this.setState({
-        student: Object.assign(snapshot.val(), { id: id })
-      });
-      firebase.database()
-        .ref('forums/')
-        .orderByChild('tf')
-        .equalTo(snapshot.val().tf)
-        .on('child_added', snapshot => {
-          this.setState({
-            forum: snapshot.val()
-          });
-        });
-    });
   }
+
+  componentWillMount() {
+    this.getStudentFromFirebase();
+    this.getCommentsOfStudentFromFirebase();
+  }
+
+  getStudentFromFirebase() {
+    const studentId = this.props.match.params.id;
+    firebase
+      .database()
+      .ref(`students/${studentId}`)
+      .on('value', snapshot => {
+        if (!snapshot.val()) {
+          this.setState({
+            notFound: true
+          });
+          return;
+        }
+        this.getForumOfStudentFromFirebase(snapshot.val().forum);
+        this.setState({
+          student: FirebaseHelper.snapshotWithUid(snapshot)
+        });
+      });
+  }
+
+  getForumOfStudentFromFirebase(forumId) {
+    firebase.database()
+      .ref(`forums/${forumId}`)
+      .once('value', snapshot => {
+        this.setState({
+          forum: snapshot.val(),
+          loading: false
+        });
+      });
+  }
+
+  getCommentsOfStudentFromFirebase() {
+    const studentId = this.props.match.params.id;
+    firebase
+      .database()
+      .ref('comments')
+      .orderByChild('student')
+      .equalTo(studentId)
+      .on('value', snapshot => {
+        this.setState({
+          comments: FirebaseHelper.snapshotToArray(snapshot) || []
+        });
+      });
+  }
+
   changeStudentRating(data) {
-    const id = this.state.student.id;
-    firebase.database().ref('students/' + id).update({
-      rating: data.rating
-    });
+    const studentId = this.props.match.params.id;
+    firebase.
+      database()
+      .ref(`students/${studentId}`)
+      .update({
+        rating: data.rating
+      });
     this.setState({
       student: Object.assign({}, this.state.student, { rating: data.rating })
     });
   }
+
   componentWillUnmount() {
-    firebase.database().ref('students/').off();
-    firebase.database().ref('forums/').off();
+    firebase.database().ref('students').off();
+    firebase.database().ref('forums').off();
   }
+
+  commentsByCategory() {
+    const categoryToCommentsMap = {};
+    this.state.comments.forEach(comment => {
+      if (categoryToCommentsMap[comment.category]) {
+        categoryToCommentsMap[comment.category].push(comment)
+      } else {
+        categoryToCommentsMap[comment.category] = [comment];
+      }
+    });
+    const categories = Object.keys(categoryToCommentsMap);
+    const arrayOfCommentsByCategory = categories.map(category => categoryToCommentsMap[category]);
+    return arrayOfCommentsByCategory;
+  }
+
   render() {
     return (
       <div style={{ padding: '40px' }}>
-        <Grid columns={3} verticalAlign='middle'>
-          <Grid.Row>
-            <Grid.Column>
-              <Header as='h1' icon textAlign='center'>
-                <Icon name='user' circular />
-              </Header>
-            </Grid.Column>
-            <Grid.Column>
-              <Header as='h1' icon textAlign='center'>
-                <Header.Content>
-                  {this.state.student.name}
-                </Header.Content>
-                <Header.Subheader>
-                  {this.state.student.CCID}
-                </Header.Subheader>
-                {this.state.forum ?
+        {this.state.loading &&
+          <Dimmer active>
+            <Loader />
+          </Dimmer>
+        }
+        {!this.state.loading && this.state.student && this.state.forum &&
+          <Grid verticalAlign='middle' divided='vertically'>
+            <Grid.Row columns={3}>
+              <Grid.Column>
+                <Header as='h1' icon textAlign='center'>
+                  <Icon name='user' circular />
+                </Header>
+              </Grid.Column>
+              <Grid.Column textAlign='center'>
+                <Header as='h1' icon textAlign='center'>
+                  <Header.Content>
+                    {this.state.student.name}
+                  </Header.Content>
                   <Header.Subheader>
-                    <Link to={'/tf/' + this.state.forum.tf}>Forum {this.state.forum.year + this.state.forum.letter}</Link>
-                  </Header.Subheader> :
-                  <div />
-                }
-              </Header>
-            </Grid.Column>
-            <Grid.Column textAlign='center'>
-              <Rating
-                size='huge'
-                icon='star'
-                rating={this.state.student.rating}
-                maxRating={5}
-                onRate={(e, data) => this.changeStudentRating(data)} />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-        <Divider />
-        <CommentsList student={this.state.student} />
+                    {this.state.student.CCID}
+                  </Header.Subheader>
+                  <Header.Subheader>
+                    <Link to={`/forums/${this.state.student.forum}`}>
+                      Forum {this.state.forum.year + this.state.forum.letter}
+                    </Link>
+                  </Header.Subheader>
+                </Header>
+                <CommentForm
+                  createdBy={this.props.user}
+                  student={this.state.student}
+                />
+              </Grid.Column>
+              <Grid.Column textAlign='center'>
+                <Rating
+                  size='huge'
+                  icon='star'
+                  rating={this.state.student.rating}
+                  maxRating={5}
+                  onRate={(e, data) => this.changeStudentRating(data)} />
+              </Grid.Column>
+            </Grid.Row>
+            <Grid>
+              <Grid.Row>
+                {this.commentsByCategory().map((comments, index) => (
+                  <Grid.Column width={16} key={index} style={{paddingBottom: '30px'}}>
+                    <Segment>
+                      <Label as='a' color='orange' ribbon>{comments[0].category}</Label>
+                      <CommentsList
+                        comments={comments}
+                        user={this.props.user}
+                      />
+                    </Segment>
+                  </Grid.Column>
+                ))}
+              </Grid.Row>
+            </Grid>
+          </Grid>
+        }
       </div>
     );
   }

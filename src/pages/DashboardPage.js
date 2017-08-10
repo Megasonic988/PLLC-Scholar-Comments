@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Divider, List, Rating, Dimmer, Loader, Grid } from 'semantic-ui-react';
+import { Header, Divider, Dimmer, Loader, Grid } from 'semantic-ui-react';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
 import ForumList from '../components/ForumList';
@@ -67,6 +67,11 @@ class DashboardPage extends Component {
       }
     }
     return false;
+  }
+
+  handleChange(text, medium) {
+    this.setState({ text: text });
+    console.log(text, medium)
   }
 
   render() {

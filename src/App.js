@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { Dimmer, Loader } from 'semantic-ui-react';
 import * as firebase from 'firebase';
+import './App.css';
 
 import UnauthorizedUserPage from './pages/UnauthorizedUserPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -25,7 +26,7 @@ class App extends Component {
   routeWithUserProps(path, Component) {
     return (
       <Route exact path={path} render={(props) => (
-        <Component user={this.state.user} />
+        <Component {...props} user={this.state.user} />
       )} />
     );
   }
@@ -35,7 +36,7 @@ class App extends Component {
       <Switch>
         {this.routeWithUserProps('/', DashboardPage)}
         {this.routeWithUserProps('/forums/:id', ForumPage)}
-        {this.routeWithUserProps('/students', StudentPage)}
+        {this.routeWithUserProps('/students/:id', StudentPage)}
         {/* <Route exact path='/comments/:id' component={CommentPage} /> */}
         {this.routeWithUserProps('/404', NotFoundPage)}
         <Redirect to='/404' />
@@ -51,7 +52,14 @@ class App extends Component {
         .then(snapshot => {
           if (snapshot.val()) {
             // set user as Google info + database info
-            this.setState({ user: Object.assign(user, snapshot.val()) });
+            this.setState({ user: Object.assign(snapshot.val(), user) });
+            firebase
+              .database()
+              .ref(`users/${user.uid}`)
+              .update({
+                name: user.displayName,
+                photoURL: user.photoURL
+              });
           } else {
             this.setState({
               user: user

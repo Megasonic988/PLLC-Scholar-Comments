@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Card, Grid, Rating, Header, Icon, Divider, Modal, Form, Input, Dimmer, Loader } from 'semantic-ui-react';
-import { Switch, Route, Redirect, Link } from 'react-router-dom';
+import { Card, Grid, Header, Icon, Divider, Dimmer, Loader } from 'semantic-ui-react';
+import { Redirect } from 'react-router-dom';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
-import StudentFormPage from './StudentFormPage';
+
 import StudentCard from '../components/StudentCard';
-import StudentList from '../components/StudentList';
 import StudentForm from '../components/StudentForm';
 
 class ForumPage extends Component {
@@ -14,11 +13,18 @@ class ForumPage extends Component {
     this.state = {
       loading: true,
       forum: null,
-      students: []
+      students: [],
+      notFound: false
     }
+  }
 
+  componentWillMount() {
     this.getForumFromFirebase();
-    this.getStudentsOfForumFromFirebase();
+  }
+
+  componentWillUnmount() {
+    firebase.database().ref('students').off();
+    firebase.database().ref('forums').off();
   }
 
   getForumFromFirebase() {
@@ -26,9 +32,14 @@ class ForumPage extends Component {
     firebase.database()
       .ref(`forums/${forumId}`)
       .on('value', snapshot => {
+        if (!snapshot.val()) {
+          this.setState({
+            notFound: true
+          });
+        }
+        this.getStudentsOfForumFromFirebase();
         this.setState({
           forum: snapshot.val(),
-          loading: false
         });
       });
   }
@@ -40,19 +51,21 @@ class ForumPage extends Component {
       .orderByChild('forum')
       .equalTo(forumId)
       .on('value', snapshot => {
-         this.setState({
-          students: FirebaseHelper.snapshotToArray(snapshot),
+        this.setState({
+          students: FirebaseHelper.snapshotToArray(snapshot) || [],
+          loading: false
         });
       });
   }
 
-  componentWillUnmount() {
-    firebase.database().ref('students/').off();
-    firebase.database().ref('forums/').off();
-  }
-
   render() {
     const forumId = this.props.match.params.id;
+
+    if (this.state.notFound) {
+      return (
+        <Redirect to='/404' />
+      );
+    }
 
     return (
       <div style={{ padding: '40px' }}>
