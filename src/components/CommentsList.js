@@ -46,7 +46,7 @@ class CommentFeedEvent extends React.Component {
         </Feed.Label>
         <Feed.Content>
           <Feed.Summary>
-            <Feed.User>{this.state.author.name}</Feed.User> wrote{' '}
+            <Feed.User>{this.state.author.displayName}</Feed.User> wrote{' '}
             <Link to={`/comments/${this.props.comment.uid}`}>{this.props.comment.title}</Link>
             <Feed.Date>{moment(this.props.comment.dateCreated).format('MMM Do YYYY, h:mm a')}</Feed.Date>
             {this.props.comment.attentionRequired &&

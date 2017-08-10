@@ -60,7 +60,7 @@ class Comment extends React.Component {
           </Feed.Label>
           <Feed.Content>
             <Feed.Summary>
-              <Feed.User>{this.state.author.name}</Feed.User> wrote <a>{this.props.comment.title}</a>
+              <Feed.User>{this.state.author.displayName}</Feed.User> wrote <a>{this.props.comment.title}</a>
               {this.state.student &&
                 <span> for <Link to={`/students/${this.props.comment.student}`}>{this.state.student.name}</Link></span>
               }

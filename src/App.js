@@ -52,7 +52,10 @@ class App extends Component {
 
     // if successfully logged in via Google, get the user object from the database
     if (user) {
-      firebase.database().ref(`users/${user.uid}`).once('value')
+      firebase
+        .database()
+        .ref(`users/${user.uid}`)
+        .once('value')
         .then(snapshot => {
           if (snapshot.val()) {
             // set user as Google info + database info
@@ -61,7 +64,7 @@ class App extends Component {
               .database()
               .ref(`users/${user.uid}`)
               .update({
-                name: user.displayName,
+                displayName: user.displayName,
                 photoURL: user.photoURL
               });
           } else {

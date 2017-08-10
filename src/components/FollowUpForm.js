@@ -27,7 +27,7 @@ class FollowUpForm extends Component {
       open: false
     });
     const followUpDate = moment(new Date()).format('MMM Do YYYY, h:mm a');
-    const followUpAuthor = this.props.user.name;
+    const followUpAuthor = this.props.user.displayName;
     const followUpHeader = '<b>Follow Up (' + followUpDate + ' by ' + followUpAuthor + ')</b><br />';
     const followUpText = this.props.comment.text + followUpHeader + this.state.text;
     firebase
