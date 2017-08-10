@@ -17,6 +17,7 @@ class DashboardPage extends Component {
       forums: [],
       warningStudents: [],
       comments: [],
+      attentionRequiredComments: [],
       loading: true
     };
   }
@@ -25,6 +26,7 @@ class DashboardPage extends Component {
     this.getForumsFromFirebase();
     this.getWarningStudentsFromFirebase();
     this.getRecentCommentsFromFirebase();
+    this.getAttentionRequiredCommentsFromFirebase();
   }
 
   componentWillUnmount() {
@@ -77,6 +79,19 @@ class DashboardPage extends Component {
       .on('value', snapshot => {
         this.setState({
           comments: FirebaseHelper.snapshotToArray(snapshot) || []
+        });
+      });
+  }
+
+  getAttentionRequiredCommentsFromFirebase() {
+    firebase
+      .database()
+      .ref('comments')
+      .orderByChild('attentionRequired')
+      .equalTo(true)
+      .on('value', snapshot => {
+        this.setState({
+          attentionRequiredComments: FirebaseHelper.snapshotToArray(snapshot) || []
         });
       });
   }
@@ -134,6 +149,16 @@ class DashboardPage extends Component {
                 <Grid.Row>
                   <Segment style={{ textAlign: 'center' }}>
                     <Link to={'/students'}>View All Students</Link>
+                  </Segment>
+                  <Segment>
+                    <Label as='a' color='red' size='large' ribbon>
+                      Attention Required
+                      <Label.Detail>{this.state.attentionRequiredComments.length}</Label.Detail>
+                    </Label>
+                    <CommentsSummaryList
+                      comments={this.state.attentionRequiredComments}
+                      user={this.props.user}
+                    />
                   </Segment>
                   <Segment>
                     <Label as='a' color='orange' size='large' ribbon>
