@@ -57,7 +57,7 @@ class CommentSummaryFeedEvent extends React.Component {
         </Feed.Label>
         <Feed.Content>
           <Feed.Summary>
-            <Feed.User>{this.state.author.name}</Feed.User> wrote{' '}
+            <Feed.User>{this.state.author.displayName}</Feed.User> wrote{' '}
             <Link to={`/comments/${this.props.comment.uid}`}>{this.props.comment.title}</Link>
             {this.state.student &&
               <span> for <Link to={`/students/${this.props.comment.student}`}>{this.state.student.name}</Link></span>
