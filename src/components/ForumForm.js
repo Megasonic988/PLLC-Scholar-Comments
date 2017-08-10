@@ -44,7 +44,7 @@ class ForumForm extends Component {
             onClick={() => this.setState({ open: true })}
             content='Add Forum'
             color='green'
-            icon='tag' />
+            icon='users' />
         }
         open={this.state.open}>
         <Modal.Header>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Form, TextArea, Dropdown, Radio, Rating } from 'semantic-ui-react';
+import { Modal, Button, Form, Dropdown, Radio, Rating } from 'semantic-ui-react';
 import * as firebase from 'firebase';
 import Editor from 'react-medium-editor';
 import 'medium-editor/dist/css/medium-editor.css';
@@ -33,16 +33,20 @@ class CommentForm extends Component {
     this.setState({
       open: false
     });
-    firebase.database().ref('comments').push({
-      title: this.state.title,
-      text: this.state.text,
-      category: this.state.category,
-      dateCreated: new Date().toISOString(),
-      student: this.props.student.uid,
-      rating: this.props.student.rating,
-      createdBy: this.props.createdBy.uid,
-      attentionRequired: this.state.attentionRequired
-    });
+    firebase
+      .database()
+      .ref('comments')
+      .push({
+        title: this.state.title,
+        text: this.state.text,
+        category: this.state.category,
+        dateCreated: new Date().toISOString(),
+        dateUpdated: new Date().toISOString(),
+        student: this.props.student.uid,
+        rating: this.props.student.rating,
+        createdBy: this.props.createdBy.uid,
+        attentionRequired: this.state.attentionRequired
+      });
   }
 
   handleChange(event) {
@@ -72,7 +76,7 @@ class CommentForm extends Component {
       commentCategories: [{ text: value, value }, ...this.state.commentCategories],
     })
   }
-  
+
   handleRadioChange = () => {
     this.setState({
       attentionRequired: !this.state.attentionRequired
@@ -105,7 +109,6 @@ class CommentForm extends Component {
               <label>Category</label>
               <Dropdown
                 placeholder='Select Category'
-                name
                 fluid
                 selection
                 allowAdditions

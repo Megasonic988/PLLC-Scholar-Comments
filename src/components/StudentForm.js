@@ -56,14 +56,13 @@ class StudentForm extends Component {
               <label>CCID</label>
               <input name="CCID" placeholder="Enter CCID..." onChange={this.handleChange.bind(this)} />
             </Form.Field>
-            <Button color='green' onClick={() => this.createNewStudent()}>Add Student</Button>
           </Form>
         </Modal.Content>
         <Modal.Actions>
           <Button negative onClick={() => this.setState({ open: false })}>
             Cancel
           </Button>
-          <Button onClick={() => this.addStudent()} positive icon='edit' labelPosition='left' content='Okay' />
+          <Button onClick={() => this.addStudent()} positive icon='edit' labelPosition='left' content='Add' />
         </Modal.Actions>
       </Modal>
 

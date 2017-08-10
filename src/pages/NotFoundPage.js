@@ -1,7 +1,10 @@
 import React from 'react';
 
 const NotFoundPage = () => (
-  <h1>This page was not found.</h1>
+  <div style={{ textAlign: 'center', paddingTop: '20%' }}>
+    <h1>Whoops</h1>
+    <p>This page could not be found</p>
+  </div>
 );
 
 export default NotFoundPage;

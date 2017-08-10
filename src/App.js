@@ -10,6 +10,8 @@ import WelcomePage from './pages/WelcomePage';
 import ForumPage from './pages/ForumPage';
 import DashboardPage from './pages/DashboardPage';
 import StudentPage from './pages/StudentPage';
+import CommentPage from './pages/CommentPage';
+import AllStudentsPage from './pages/AllStudentsPage';
 import NavBar from './components/NavBar';
 
 class App extends Component {
@@ -36,7 +38,9 @@ class App extends Component {
       <Switch>
         {this.routeWithUserProps('/', DashboardPage)}
         {this.routeWithUserProps('/forums/:id', ForumPage)}
+        {this.routeWithUserProps('/students', AllStudentsPage)}
         {this.routeWithUserProps('/students/:id', StudentPage)}
+        {this.routeWithUserProps('/comments/:id', CommentPage)}
         {/* <Route exact path='/comments/:id' component={CommentPage} /> */}
         {this.routeWithUserProps('/404', NotFoundPage)}
         <Redirect to='/404' />

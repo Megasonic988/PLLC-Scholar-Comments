@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import { Header, Divider, Dimmer, Loader, Grid } from 'semantic-ui-react';
+import { Dimmer, Loader, Grid, Segment, Label } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
+import moment from 'moment';
+
 import ForumList from '../components/ForumList';
 import StudentList from '../components/StudentList';
 import ForumForm from '../components/ForumForm';
+import CommentsSummaryList from '../components/CommentsSummaryList';
 
 class DashboardPage extends Component {
   constructor() {
@@ -12,11 +16,21 @@ class DashboardPage extends Component {
     this.state = {
       forums: [],
       warningStudents: [],
+      comments: [],
       loading: true
     };
+  }
 
+  componentWillMount() {
     this.getForumsFromFirebase();
-    this.getWarningStudents();
+    this.getWarningStudentsFromFirebase();
+    this.getRecentCommentsFromFirebase();
+  }
+
+  componentWillUnmount() {
+    firebase.database().ref('students').off();
+    firebase.database().ref('forums').off();
+    firebase.database().ref('comments').off();
   }
 
   getForumsFromFirebase() {
@@ -25,13 +39,13 @@ class DashboardPage extends Component {
       .ref('forums')
       .on('value', snapshot => {
         this.setState({
-          forums: FirebaseHelper.snapshotToArray(snapshot),
+          forums: FirebaseHelper.snapshotToArray(snapshot) || [],
           loading: false
         });
       });
   }
 
-  getWarningStudents() {
+  getWarningStudentsFromFirebase() {
     firebase
       .database()
       .ref('students')
@@ -44,11 +58,6 @@ class DashboardPage extends Component {
       });
   }
 
-  componentWillUnmount() {
-    firebase.database().ref('students').off();
-    firebase.database().ref('forums').off();
-  }
-
   getForumsInYear(year) {
     const forumsInYear = this.state.forums.filter(f => f.year === String(year))
     const forumsInYearSortedByLetter = forumsInYear.sort((f1, f2) => {
@@ -57,6 +66,19 @@ class DashboardPage extends Component {
       else return 0;
     });
     return forumsInYearSortedByLetter;
+  }
+
+  getRecentCommentsFromFirebase() {
+    firebase
+      .database()
+      .ref('comments')
+      .orderByChild('dateUpdated')
+      .startAt(moment().subtract(3, 'd').toISOString())
+      .on('value', snapshot => {
+        this.setState({
+          comments: FirebaseHelper.snapshotToArray(snapshot) || []
+        });
+      });
   }
 
   userHasCreatedForum() {
@@ -86,19 +108,48 @@ class DashboardPage extends Component {
       return (
         <div style={{ padding: '40px' }}>
           {!this.userHasCreatedForum() &&
-            <Grid centered>
+            <Grid centered style={{ paddingBottom: '30px' }}>
               <ForumForm createdBy={this.props.user.uid} />
             </Grid>
           }
-          <Header as='h1'>First Year Forums</Header>
-          <Divider />
-          <ForumList forums={this.getForumsInYear(1)} />
-          <Header as='h1'>Second Year Forums</Header>
-          <Divider />
-          <ForumList forums={this.getForumsInYear(2)} />
-          <Header as='h1'>Warning Students</Header>
-          <Divider />
-          <StudentList students={this.state.warningStudents} />
+          <Grid>
+            <Grid.Row>
+              <Grid.Column width={6}>
+                <Segment>
+                  <Label as='a' color='green' size='large' ribbon>
+                    First Year Forums
+                  </Label>
+                  <ForumList forums={this.getForumsInYear(1)} />
+                </Segment>
+                <Segment>
+                  <Label as='a' color='green' size='large' ribbon>Second Year Forums</Label>
+                  <ForumList forums={this.getForumsInYear(2)} />
+                </Segment>
+                <Segment>
+                  <Label as='a' color='red' size='large' ribbon>Warning Students</Label>
+                  <StudentList students={this.state.warningStudents} />
+                </Segment>
+              </Grid.Column>
+              <Grid.Column width={10}>
+                <Grid.Row>
+                  <Segment style={{ textAlign: 'center' }}>
+                    <Link to={'/students'}>View All Students</Link>
+                  </Segment>
+                  <Segment>
+                    <Label as='a' color='orange' size='large' ribbon>
+                      Recent Activity
+                      <Label.Detail>{this.state.comments.length}</Label.Detail>
+                    </Label>
+                    <CommentsSummaryList
+                      comments={this.state.comments}
+                      user={this.props.user}
+                    />
+                  </Segment>
+                </Grid.Row>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+
         </div>
       );
     }

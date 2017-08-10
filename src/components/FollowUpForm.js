@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Form, TextArea, Dropdown, Radio, Rating } from 'semantic-ui-react';
+import { Modal, Button, Form, Radio } from 'semantic-ui-react';
 import * as firebase from 'firebase';
 import moment from 'moment';
 import Editor from 'react-medium-editor';
@@ -35,7 +35,8 @@ class FollowUpForm extends Component {
       .ref(`comments/${this.props.comment.uid}`)
       .update({
         text: followUpText,
-        attentionRequired: this.state.attentionRequired
+        attentionRequired: this.state.attentionRequired,
+        dateUpdated: new Date().toISOString()
       });
   }
 

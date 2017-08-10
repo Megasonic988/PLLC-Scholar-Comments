@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
 import { Grid, Header, Icon, Rating, Dimmer, Loader, Segment, Label } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import CommentForm from '../components/CommentForm';
 import CommentsList from '../components/CommentsList';
@@ -71,8 +71,8 @@ class StudentPage extends Component {
 
   changeStudentRating(data) {
     const studentId = this.props.match.params.id;
-    firebase.
-      database()
+    firebase
+      .database()
       .ref(`students/${studentId}`)
       .update({
         rating: data.rating
@@ -97,11 +97,18 @@ class StudentPage extends Component {
       }
     });
     const categories = Object.keys(categoryToCommentsMap);
+    categories.sort();
     const arrayOfCommentsByCategory = categories.map(category => categoryToCommentsMap[category]);
     return arrayOfCommentsByCategory;
   }
 
   render() {
+    if (this.state.notFound) {
+      return (
+        <Redirect to='/404' />
+      );
+    }
+
     return (
       <div style={{ padding: '40px' }}>
         {this.state.loading &&
@@ -110,57 +117,53 @@ class StudentPage extends Component {
           </Dimmer>
         }
         {!this.state.loading && this.state.student && this.state.forum &&
-          <Grid verticalAlign='middle' divided='vertically'>
-            <Grid.Row columns={3}>
-              <Grid.Column>
-                <Header as='h1' icon textAlign='center'>
-                  <Icon name='user' circular />
-                </Header>
-              </Grid.Column>
-              <Grid.Column textAlign='center'>
-                <Header as='h1' icon textAlign='center'>
-                  <Header.Content>
-                    {this.state.student.name}
-                  </Header.Content>
-                  <Header.Subheader>
-                    {this.state.student.CCID}
-                  </Header.Subheader>
-                  <Header.Subheader>
-                    <Link to={`/forums/${this.state.student.forum}`}>
-                      Forum {this.state.forum.year + this.state.forum.letter}
-                    </Link>
-                  </Header.Subheader>
-                </Header>
-                <CommentForm
-                  createdBy={this.props.user}
-                  student={this.state.student}
-                />
-              </Grid.Column>
-              <Grid.Column textAlign='center'>
-                <Rating
-                  size='huge'
-                  icon='star'
-                  rating={this.state.student.rating}
-                  maxRating={5}
-                  onRate={(e, data) => this.changeStudentRating(data)} />
-              </Grid.Column>
-            </Grid.Row>
-            <Grid>
-              <Grid.Row>
-                {this.commentsByCategory().map((comments, index) => (
-                  <Grid.Column width={16} key={index} style={{paddingBottom: '30px'}}>
-                    <Segment>
-                      <Label as='a' color='orange' ribbon>{comments[0].category}</Label>
-                      <CommentsList
-                        comments={comments}
-                        user={this.props.user}
-                      />
-                    </Segment>
-                  </Grid.Column>
-                ))}
+          <div>
+            <Grid verticalAlign='middle' divided='vertically'>
+              <Grid.Row columns={3}>
+                <Grid.Column>
+                  <Header as='h1' icon textAlign='center'>
+                    <Icon name='user' circular />
+                  </Header>
+                </Grid.Column>
+                <Grid.Column textAlign='center'>
+                  <Header as='h1' icon textAlign='center'>
+                    <Header.Content>
+                      {this.state.student.name}
+                    </Header.Content>
+                    <Header.Subheader>
+                      {this.state.student.CCID}
+                    </Header.Subheader>
+                    <Header.Subheader>
+                      <Link to={`/forums/${this.state.student.forum}`}>
+                        Forum {this.state.forum.year + this.state.forum.letter}
+                      </Link>
+                    </Header.Subheader>
+                  </Header>
+                  <CommentForm
+                    createdBy={this.props.user}
+                    student={this.state.student}
+                  />
+                </Grid.Column>
+                <Grid.Column textAlign='center'>
+                  <Rating
+                    size='huge'
+                    icon='star'
+                    rating={this.state.student.rating}
+                    maxRating={5}
+                    onRate={(e, data) => this.changeStudentRating(data)} />
+                </Grid.Column>
               </Grid.Row>
             </Grid>
-          </Grid>
+            {this.commentsByCategory().map((comments, index) => (
+              <Segment key={index}>
+                <Label as='a' color='orange' ribbon>{comments[0].category}</Label>
+                <CommentsList
+                  comments={comments}
+                  user={this.props.user}
+                />
+              </Segment>
+            ))}
+          </div>
         }
       </div>
     );

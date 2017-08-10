@@ -5,9 +5,7 @@ import { Feed, Icon, Image, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-import FollowUpForm from './FollowUpForm';
-
-class CommentFeedEvent extends React.Component {
+class CommentSummaryFeedEvent extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -18,6 +16,7 @@ class CommentFeedEvent extends React.Component {
 
   componentWillMount() {
     this.getAuthorOfCommentFromFirebase();
+    this.getStudentOfCommentFromFirebase();
   }
 
   getAuthorOfCommentFromFirebase() {
@@ -28,6 +27,18 @@ class CommentFeedEvent extends React.Component {
       .once('value', snapshot => {
         this.setState({
           author: FirebaseHelper.snapshotWithUid(snapshot)
+        });
+      });
+  }
+
+  getStudentOfCommentFromFirebase() {
+    const studentId = this.props.comment.student;
+    firebase
+      .database()
+      .ref(`students/${studentId}`)
+      .once('value', snapshot => {
+        this.setState({
+          student: FirebaseHelper.snapshotWithUid(snapshot)
         });
       });
   }
@@ -48,6 +59,10 @@ class CommentFeedEvent extends React.Component {
           <Feed.Summary>
             <Feed.User>{this.state.author.name}</Feed.User> wrote{' '}
             <Link to={`/comments/${this.props.comment.uid}`}>{this.props.comment.title}</Link>
+            {this.state.student &&
+              <span> for <Link to={`/students/${this.props.comment.student}`}>{this.state.student.name}</Link></span>
+            }
+            <span> in {this.props.comment.category}</span>
             <Feed.Date>{moment(this.props.comment.dateCreated).format('MMM Do YYYY, h:mm a')}</Feed.Date>
             {this.props.comment.attentionRequired &&
               <Label
@@ -55,21 +70,17 @@ class CommentFeedEvent extends React.Component {
                 color='red'
                 size='mini'
                 tag
-                style={{left: '6px'}}
+                style={{ left: '6px' }}
               >
                 Attention Required
                 <Icon name='delete' />
               </Label>
             }
           </Feed.Summary>
-          <Feed.Extra text>
-            <div dangerouslySetInnerHTML={{ __html: this.props.comment.text }} />
-          </Feed.Extra>
           <Feed.Meta>
-            <FollowUpForm 
-              comment={this.props.comment} 
-              user={this.props.user}
-            />
+            <Link to={`/comments/${this.props.comment.uid}`}>View Comment</Link>
+            {' '}
+            <Link to={`/students/${this.props.comment.student}`}>View Student</Link>
           </Feed.Meta>
         </Feed.Content>
       </Feed.Event>
@@ -78,14 +89,14 @@ class CommentFeedEvent extends React.Component {
   }
 }
 
-class CommentsList extends React.Component {
+class CommentsSummaryList extends React.Component {
   render() {
     return (
       <Feed>
         {this.props.comments.map((comment, index) => (
-          <CommentFeedEvent 
-            comment={comment} 
-            key={index} 
+          <CommentSummaryFeedEvent
+            comment={comment}
+            key={index}
             user={this.props.user}
           />
         ))}
@@ -94,4 +105,4 @@ class CommentsList extends React.Component {
   }
 }
 
-export default CommentsList;
+export default CommentsSummaryList;
