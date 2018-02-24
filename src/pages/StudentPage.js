@@ -4,9 +4,11 @@ import * as FirebaseHelper from '../FirebaseHelper';
 import { Grid, Header, Icon, Rating, Dimmer, Loader, Segment, Label } from 'semantic-ui-react';
 import { Link, Redirect } from 'react-router-dom';
 
-import CommentForm from '../components/CommentForm';
+import AcademicCommentForm from '../components/AcademicCommentForm';
+import ParticipationCommentForm from '../components/ParticipationCommentForm';
+import WellnessCommentForm from '../components/WellnessCommentForm';
+import InnovationCommentForm from '../components/InnovationCommentForm';
 import CommentsList from '../components/CommentsList';
-
 
 class StudentPage extends Component {
   constructor(props) {
@@ -139,10 +141,6 @@ class StudentPage extends Component {
                       </Link>
                     </Header.Subheader>
                   </Header>
-                  <CommentForm
-                    createdBy={this.props.user}
-                    student={this.state.student}
-                  />
                 </Grid.Column>
                 <Grid.Column textAlign='center'>
                   <Rating
@@ -152,6 +150,24 @@ class StudentPage extends Component {
                     maxRating={5}
                     onRate={(e, data) => this.changeStudentRating(data)} />
                 </Grid.Column>
+              </Grid.Row>
+              <Grid.Row centered>
+                <AcademicCommentForm
+                  createdBy={this.props.user}
+                  student={this.state.student}
+                />
+                <ParticipationCommentForm
+                  createdBy={this.props.user}
+                  student={this.state.student}
+                />
+                <WellnessCommentForm
+                  createdBy={this.props.user}
+                  student={this.state.student}
+                />
+                <InnovationCommentForm
+                  createdBy={this.props.user}
+                  student={this.state.student}
+                />
               </Grid.Row>
             </Grid>
             {this.commentsByCategory().map((comments, index) => (

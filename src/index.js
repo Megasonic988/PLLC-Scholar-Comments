@@ -8,6 +8,12 @@ import { BrowserRouter } from 'react-router-dom';
 
 var firebaseConfig;
 
+/* NODE_ENV is set automatically by react-scripts
+yarn start: NODE_ENV = development
+yarn test: NODE_ENV = test
+yarn build: NODE_ENV = production
+*/
+
 if (process.env.NODE_ENV === 'development') {
   firebaseConfig = {
     apiKey: "AIzaSyAOs3A7-xbeo-lE1kTG_wOMZKxLpTJfv9A",
@@ -17,7 +23,9 @@ if (process.env.NODE_ENV === 'development') {
     storageBucket: "pllc-scholar-comments-test.appspot.com",
     messagingSenderId: "568652220916"
   }
-} else {
+}
+
+if (process.env.NODE_ENV === 'production') {
   firebaseConfig = {
     apiKey: "AIzaSyBXnZ3h9ili_spgZtNms1Ig4hF-KWcFx6Q",
     authDomain: "pllc-scholar-comments.firebaseapp.com",

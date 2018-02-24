@@ -20,3 +20,7 @@
     transition: color .1s ease,border-color .1s ease;
     vertical-align: top;
 }
+
+.medium-editor-placeholder:after {
+    color: #d3d3d3 !important;
+}

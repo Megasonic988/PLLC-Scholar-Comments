@@ -1,0 +1,195 @@
+{
+    "comments": {
+        "-Kr9PO2NSwxyJpW-x_a2": {
+            "attentionRequired": false,
+            "category": "Academic",
+            "createdBy": "ZyCCbewu7vMHL15Cdg2lrHzqbcG3",
+            "dateCreated": "2017-08-10T04:31:42.429Z",
+            "dateUpdated": "2017-08-10T04:31:42.429Z",
+            "rating": 3,
+            "student": "-Kr9OSsc0naT-no1HWVz",
+            "text": "<p><b>Really great work</b></p><p>the time you did the work was very good. keep it up</p><p><i>but don't get too cocky!</i></p>",
+            "title": "You're doing well selina!"
+        },
+        "-Kr9Py3F6yTIgo1BXWNU": {
+            "attentionRequired": true,
+            "category": "Personal Wellness",
+            "createdBy": "ZyCCbewu7vMHL15Cdg2lrHzqbcG3",
+            "dateCreated": "2017-08-10T04:34:14.037Z",
+            "dateUpdated": "2017-08-10T04:34:14.037Z",
+            "rating": 1,
+            "student": "-Kr9Od6n5AnEXzKfP1x4",
+            "text": "<p>We're looking for some resources. <i>Please</i> give me some advice</p>",
+            "title": "Dale is not doing so well right now. Support needed."
+        }
+    },
+    "forums": {
+        "-Kr9JjixSd6ho2zk8x31": {
+            "letter": "A",
+            "name": "Awesome Forum",
+            "year": "1"
+        },
+        "-Kr9JjixSd6ho2zk8x32": {
+            "letter": "B",
+            "name": "Best Forum",
+            "year": "1"
+        },
+        "-Kr9JjixSd6ho2zk8x33": {
+            "letter": "C",
+            "name": "Cool Forum",
+            "year": "1"
+        },
+        "-Kr9JjixSd6ho2zk8x34": {
+            "letter": "A",
+            "name": "Actual Forum",
+            "year": "2"
+        },
+        "-Kr9JjixSd6ho2zk8x35": {
+            "letter": "B",
+            "name": "Boring Forum",
+            "year": "2"
+        },
+        "-Kr9JjixSd6ho2zk8x36": {
+            "letter": "C",
+            "name": "Canadian Forum",
+            "year": "2"
+        },
+        "-Kr9JjixSd6ho2zk8x37": {
+            "letter": "D",
+            "name": "Dangerous Forum",
+            "year": "2"
+        }
+    },
+    "students": {
+        "-Kr9Jm97gziIzslhc7yC": {
+            "CCID": "weixiang",
+            "forum": "-Kr9JjixSd6ho2zk8x3Q",
+            "name": "Kevin Wang",
+            "rating": 5
+        },
+        "-Kr9OQmZFn0FCx7jWXTa": {
+            "CCID": "aajoe",
+            "forum": "-Kr9JjixSd6ho2zk8x31",
+            "name": "Aaron Joe",
+            "rating": 5
+        },
+        "-Kr9OSsc0naT-no1HWVz": {
+            "CCID": "swang",
+            "forum": "-Kr9JjixSd6ho2zk8x31",
+            "name": "Selina Wang",
+            "rating": 3
+        },
+        "-Kr9OWjnD-0CEIFnZiAc": {
+            "CCID": "joej",
+            "forum": "-Kr9JjixSd6ho2zk8x31",
+            "name": "Joe Jiminez",
+            "rating": 4
+        },
+        "-Kr9Od6n5AnEXzKfP1x4": {
+            "CCID": "daler",
+            "forum": "-Kr9JjixSd6ho2zk8x31",
+            "name": "Dale Rector",
+            "rating": 1
+        },
+        "-Kr9OeWnA5Qp0pJ3F6Ky": {
+            "CCID": "xiaow",
+            "forum": "-Kr9JjixSd6ho2zk8x31",
+            "name": "Xiao Wu",
+            "rating": 5
+        },
+        "-Kr9OjKv6kAkQiTsaQp3": {
+            "CCID": "byang",
+            "forum": "-Kr9JjixSd6ho2zk8x31",
+            "name": "Bill Yang",
+            "rating": 2
+        },
+        "-Kr9OoIf_vSEJpuvRToY": {
+            "CCID": "satya",
+            "forum": "-Kr9JjixSd6ho2zk8x35",
+            "name": "Satya Nadella",
+            "rating": 3
+        },
+        "-Kr9Or0dlhiFO69JWwYT": {
+            "CCID": "billg",
+            "forum": "-Kr9JjixSd6ho2zk8x35",
+            "name": "Bill Gates",
+            "rating": 5
+        },
+        "-Kr9OxzH7EkpEoWX8XIH": {
+            "CCID": "lsacco",
+            "forum": "-Kr9JjixSd6ho2zk8x31",
+            "name": "Luigi Sacco",
+            "rating": 1
+        },
+        "-Kr9PgpQMdJOxN_vrBat": {
+            "CCID": "davidm",
+            "forum": "-Kr9JjixSd6ho2zk8x32",
+            "name": "David Moreno",
+            "rating": 5
+        },
+        "-Kr9PkGNcA3b9YdTUHES": {
+            "CCID": "benoitb",
+            "forum": "-Kr9JjixSd6ho2zk8x32",
+            "name": "Benoit Barabe",
+            "rating": 4
+        }
+    },
+    "users": {
+        "1NAESgusaqNDSFw0vON10OUCZKe2": {
+            "displayName": "Cristina Stasia",
+            "email": "stasia@ualberta.ca",
+            "photoURL": "https://lh6.googleusercontent.com/-NW43HnbZfqI/AAAAAAAAAAI/AAAAAAAAAoY/2U1bg-KyuKQ/photo.jpg",
+            "role": "tf",
+            "uid": "1NAESgusaqNDSFw0vON10OUCZKe2"
+        },
+        "62xud6jd5vc9EKYp8YDHxp8k51W2": {
+            "displayName": "Lily Ren",
+            "email": "xr@ualberta.ca",
+            "photoURL": "https://lh4.googleusercontent.com/-QtFUkZA8fqs/AAAAAAAAAAI/AAAAAAAAAOs/1ZMDsW7A3Jc/photo.jpg",
+            "role": "tf",
+            "uid": "62xud6jd5vc9EKYp8YDHxp8k51W2"
+        },
+        "CjgWC9exCZYCq3ljm4K1c1mA63n1": {
+            "displayName": "Dai Dao",
+            "email": "ddao@ualberta.ca",
+            "photoURL": "https://lh3.googleusercontent.com/-EhJWgsK6nwU/AAAAAAAAAAI/AAAAAAAAAKM/_bGfwpEipKk/photo.jpg",
+            "role": "tf",
+            "uid": "CjgWC9exCZYCq3ljm4K1c1mA63n1"
+        },
+        "Gv5jF7wbFFZ7xIZt9etBqXjvH9Y2": {
+            "displayName": "Lebogang Disele",
+            "email": "disele@ualberta.ca",
+            "photoURL": "https://lh3.googleusercontent.com/-GAa_M2AxQvA/AAAAAAAAAAI/AAAAAAAAAAA/4PYWbofiC2s/photo.jpg",
+            "role": "tf",
+            "uid": "Gv5jF7wbFFZ7xIZt9etBqXjvH9Y2"
+        },
+        "ONAaGPDRQaT0hhBb5wAG37yckqk2": {
+            "displayName": "Daisy Raphael",
+            "email": "dmraphae@ualberta.ca",
+            "photoURL": "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+            "role": "tf",
+            "uid": "ONAaGPDRQaT0hhBb5wAG37yckqk2"
+        },
+        "Pu9g7j0M2VSM8Ge5RV9IurpmXyh1": {
+            "displayName": "Grace Cleveland",
+            "email": "clevelan@ualberta.ca",
+            "photoURL": "https://lh6.googleusercontent.com/-2ntVCkrZy-k/AAAAAAAAAAI/AAAAAAAAAHs/A5sVmEEQciA/photo.jpg",
+            "role": "tf",
+            "uid": "Pu9g7j0M2VSM8Ge5RV9IurpmXyh1"
+        },
+        "ZyCCbewu7vMHL15Cdg2lrHzqbcG3": {
+            "displayName": "Kevin Wang",
+            "email": "weixiang@ualberta.ca",
+            "photoURL": "https://lh3.googleusercontent.com/-Rd6tMqpUCAY/AAAAAAAAAAI/AAAAAAAAAAo/QE2dEXLgx9s/photo.jpg",
+            "role": "tf",
+            "uid": "ZyCCbewu7vMHL15Cdg2lrHzqbcG3"
+        },
+        "kj8rVxCFp3bTs14tWhxLzDW8Tou1": {
+            "displayName": "Jonathan Dubue",
+            "email": "jdubue@ualberta.ca",
+            "photoURL": "https://lh5.googleusercontent.com/-Hyhuah-LXx0/AAAAAAAAAAI/AAAAAAAAAII/BF5jYzpymzw/photo.jpg",
+            "role": "tf",
+            "uid": "kj8rVxCFp3bTs14tWhxLzDW8Tou1"
+        }
+    }
+}

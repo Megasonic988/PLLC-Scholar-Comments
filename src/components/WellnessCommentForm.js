@@ -1,31 +1,37 @@
 import React, { Component } from 'react';
-import { Modal, Button, Form, Dropdown, Radio, Rating } from 'semantic-ui-react';
+import { Modal, Button, Form, Dropdown, Radio } from 'semantic-ui-react';
 import * as firebase from 'firebase';
 import Editor from 'react-medium-editor';
 import 'medium-editor/dist/css/medium-editor.css';
 import 'medium-editor/dist/css/themes/bootstrap.css';
+import moment from 'moment';
 
-const commentCategories = [{
+const categories = [{
+  text: 'Follow-up',
+  value: 'Follow-up'
+}, {
+  text: 'Check-in',
+  value: 'Check-in'
+}, {
   text: 'Academic',
   value: 'Academic'
 }, {
-  text: 'Personal Wellness',
-  value: 'Personal Wellness'
+  text: 'Behaviour',
+  value: 'Behaviour'
 }, {
-  text: 'Other',
-  value: 'Other'
+  text: 'Emergency',
+  value: 'Emergency'
 }];
 
-class CommentForm extends Component {
+class WellnessCommentForm extends Component {
   constructor() {
     super();
     this.state = {
-      title: '',
       text: '',
-      category: commentCategories[0].value,
+      category: null,
       attentionRequired: false,
       open: false,
-      commentCategories: commentCategories
+      categories: categories
     };
   }
 
@@ -35,27 +41,16 @@ class CommentForm extends Component {
     });
     firebase
       .database()
-      .ref('comments')
+      .ref('comments/wellness')
       .push({
-        title: this.state.title,
         text: this.state.text,
         category: this.state.category,
         dateCreated: new Date().toISOString(),
         dateUpdated: new Date().toISOString(),
         student: this.props.student.uid,
-        rating: this.props.student.rating,
         createdBy: this.props.createdBy.uid,
         attentionRequired: this.state.attentionRequired
       });
-  }
-
-  handleChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = event.target.name;
-    this.setState({
-      [name]: value
-    });
   }
 
   handleTextChange(text) {
@@ -64,17 +59,13 @@ class CommentForm extends Component {
     });
   }
 
-  handleDropdownChange = (e, { value }) => this.setState({ category: value })
+  handleCategoryDropdownChange = (e, { value }) => this.setState({ category: value })
+
+  handleSubcategoryDropdownChange = (e, { value }) => this.setState({ subcategory: value })
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.text !== nextState.text) return false;
     else return true;
-  }
-
-  handleAddition = (e, { value }) => {
-    this.setState({
-      commentCategories: [{ text: value, value }, ...this.state.commentCategories],
-    })
   }
 
   handleRadioChange = () => {
@@ -89,22 +80,21 @@ class CommentForm extends Component {
         trigger={
           <Button
             onClick={() => this.setState({ open: true })}
-            content='Add Comment'
+            content='Wellness'
             color='green'
             icon='edit'
-            label={{ as: 'a', color: 'green', pointing: 'left', basic: true, content: this.props.numComments }} />
+          />
         }
         open={this.state.open}>
         <Modal.Header>
-          Add New Comment for {this.props.student.name.split(' ')[0]}
+          Add New Wellness Comment for {this.props.student.name.split(' ')[0]}
         </Modal.Header>
         <Modal.Content>
           <Form>
-            <Form.Input
-              label="Title"
-              placeholder="Write a title..."
-              name='title'
-              onChange={this.handleChange.bind(this)} />
+            <Form.Field>
+              <label>Date</label>
+              <p>{moment(new Date()).format('MMMM Do YYYY')}</p>
+            </Form.Field>
             <Form.Field>
               <label>Category</label>
               <Dropdown
@@ -115,17 +105,9 @@ class CommentForm extends Component {
                 search
                 value={this.state.category}
                 name='category'
-                onChange={this.handleDropdownChange}
-                options={this.state.commentCategories}
-                onAddItem={this.handleAddition}
+                onChange={this.handleCategoryDropdownChange}
+                options={this.state.categories}
               />
-            </Form.Field>
-            <Form.Field>
-              <label>Rating</label>
-              <Rating
-                defaultRating={this.props.student.rating}
-                maxRating={5}
-                disabled />
             </Form.Field>
             <Form.Field>
               <label>Attention Required</label>
@@ -165,4 +147,4 @@ class CommentForm extends Component {
   }
 }
 
-export default CommentForm;
+export default WellnessCommentForm;
