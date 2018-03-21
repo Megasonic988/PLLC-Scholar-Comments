@@ -66,8 +66,23 @@ class AcademicCommentForm extends Component {
         student: this.props.student.uid,
         createdBy: this.props.createdBy.uid,
       });
+    const student = Object.assign({}, this.props.student);
+    const category = this.state.category;
+    if (category === 'Absence') {
+      student.rating -= 2;
+    } else if (category === 'Late Submission') {
+      student.rating -= 1;
+    } else if (category === 'No Submission') {
+      student.rating -= 1;
+    } else if (category === 'Disruptive Behaviour') {
+      student.rating -= 1;
+    }
+    firebase
+      .database()
+      .ref(`students/${this.props.student.uid}`)
+      .set(student);
   }
-  
+
   handleTextChange(text) {
     this.setState({
       text: text
@@ -90,7 +105,7 @@ class AcademicCommentForm extends Component {
           <Button
             onClick={() => this.setState({ open: true })}
             content='Academic'
-            color='green'
+            color='orange'
             icon='edit'
           />
         }

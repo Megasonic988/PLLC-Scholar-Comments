@@ -91,7 +91,7 @@ class ForumPage extends Component {
                     {this.state.forum.name}
                   </Header.Subheader>
                   <Header.Subheader style={{ paddingTop: '3px' }}>
-                    {this.state.students.length + ' scholar' + (this.state.students.length === 1 ? '' : 's')}
+                    {this.state.students.length + ' Scholar' + (this.state.students.length === 1 ? '' : 's')}
                   </Header.Subheader>
                 </Header>
               </Grid.Column>

@@ -1,13 +1,10 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
-import { Feed, Icon, Image, Label } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Feed, Image } from 'semantic-ui-react';
 import moment from 'moment';
 
-import FollowUpForm from './FollowUpForm';
-
-class CommentFeedEvent extends React.Component {
+class ParticipationCommentFeedEvent extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -46,30 +43,18 @@ class CommentFeedEvent extends React.Component {
         </Feed.Label>
         <Feed.Content>
           <Feed.Summary>
-            <Feed.User>{this.state.author.displayName}</Feed.User> wrote{' '}
-            <Link to={`/comments/${this.props.comment.uid}`}>{this.props.comment.title}</Link>
-            <Feed.Date>{moment(this.props.comment.dateCreated).format('MMM Do YYYY, h:mm a')}</Feed.Date>
-            {this.props.comment.attentionRequired &&
-              <Label
-                as='a'
-                color='red'
-                size='mini'
-                tag
-                style={{left: '6px'}}
-              >
-                Attention Required
-                <Icon name='delete' />
-              </Label>
-            }
+            {this.props.comment.category}
+            <Feed.Date>
+              {moment(this.props.comment.dateCreated).format('MMM Do YYYY')}
+            </Feed.Date>
           </Feed.Summary>
-          <Feed.Extra text>
-            <div dangerouslySetInnerHTML={{ __html: this.props.comment.text }} />
-          </Feed.Extra>
+          {this.props.comment.text &&
+            <Feed.Extra text>
+              <div dangerouslySetInnerHTML={{ __html: this.props.comment.text }} />
+            </Feed.Extra>
+          }
           <Feed.Meta>
-            <FollowUpForm 
-              comment={this.props.comment} 
-              user={this.props.user}
-            />
+            Submitted by {this.state.author.displayName}
           </Feed.Meta>
         </Feed.Content>
       </Feed.Event>
@@ -78,14 +63,14 @@ class CommentFeedEvent extends React.Component {
   }
 }
 
-class CommentsList extends React.Component {
+class ParticipationCommentsList extends React.Component {
   render() {
     return (
       <Feed>
         {this.props.comments.map((comment, index) => (
-          <CommentFeedEvent 
-            comment={comment} 
-            key={index} 
+          <ParticipationCommentFeedEvent
+            comment={comment}
+            key={index}
             user={this.props.user}
           />
         ))}
@@ -94,4 +79,4 @@ class CommentsList extends React.Component {
   }
 }
 
-export default CommentsList;
+export default ParticipationCommentsList;

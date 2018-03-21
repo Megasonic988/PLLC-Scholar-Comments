@@ -46,6 +46,21 @@ class ParticipationCommentForm extends Component {
         student: this.props.student.uid,
         createdBy: this.props.createdBy.uid,
       });
+    const student = Object.assign({}, this.props.student);
+    const category = this.state.category;
+    if (category === 'Co-curricular') {
+      student.rating += 1;
+    } else if (category === 'Mentor') {
+      student.rating += 1;
+    } else if (category === 'Committee') {
+      student.rating += 1;
+    } else if (category === 'Community') {
+      student.rating += 1;
+    }
+    firebase
+      .database()
+      .ref(`students/${this.props.student.uid}`)
+      .set(student);
   }
 
   handleTextChange(text) {
@@ -68,7 +83,7 @@ class ParticipationCommentForm extends Component {
           <Button
             onClick={() => this.setState({ open: true })}
             content='Participation'
-            color='green'
+            color='blue'
             icon='edit'
           />
         }

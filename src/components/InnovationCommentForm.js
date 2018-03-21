@@ -61,13 +61,13 @@ class InnovationCommentForm extends Component {
           <Button
             onClick={() => this.setState({ open: true })}
             content='Innovation'
-            color='green'
+            color='red'
             icon='edit'
           />
         }
         open={this.state.open}>
         <Modal.Header>
-          Add New Participation Comment for {this.props.student.name.split(' ')[0]}
+          Add New Innovation Comment for {this.props.student.name.split(' ')[0]}
         </Modal.Header>
         <Modal.Content>
           <Form>
@@ -81,7 +81,7 @@ class InnovationCommentForm extends Component {
               name='title'
               onChange={this.handleChange.bind(this)} />
             <Form.Field>
-              <label>Comment (Optional)</label>
+              <label>Comment</label>
               <Editor
                 name='text'
                 onChange={this.handleTextChange.bind(this)}

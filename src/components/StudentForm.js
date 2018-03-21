@@ -25,7 +25,7 @@ class StudentForm extends Component {
       name: this.state.name,
       CCID: this.state.CCID,
       forum: this.props.forum,
-      rating: 5,
+      rating: 0,
     });
     this.setState({
       open: false

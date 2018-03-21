@@ -1,9 +1,9 @@
 import React from 'react';
-import { Card, Rating } from 'semantic-ui-react';
+import { Card, Statistic } from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 
 class StudentCard extends React.Component {
-  
+
   navigateToStudentPage() {
     this.props.history.push(`/students/${this.props.uid}`)
   }
@@ -20,12 +20,12 @@ class StudentCard extends React.Component {
           </Card.Meta>
         </Card.Content>
         <Card.Content>
-          <Rating
-            size='huge'
-            disabled
-            icon='star'
-            defaultRating={this.props.rating}
-            maxRating={5} />
+          <Statistic horizontal size='mini' color='teal'>
+            <Statistic.Value>
+              {this.props.rating}
+            </Statistic.Value>
+            <Statistic.Label>Rating</Statistic.Label>
+          </Statistic>
         </Card.Content>
       </Card>
     );

@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
-import { Grid, Header, Icon, Rating, Dimmer, Loader, Segment, Label } from 'semantic-ui-react';
+import { Statistic, Grid, Header, Icon, Dimmer, Loader, Segment, Label } from 'semantic-ui-react';
 import { Link, Redirect } from 'react-router-dom';
 
 import AcademicCommentForm from '../components/AcademicCommentForm';
 import ParticipationCommentForm from '../components/ParticipationCommentForm';
 import WellnessCommentForm from '../components/WellnessCommentForm';
 import InnovationCommentForm from '../components/InnovationCommentForm';
-import CommentsList from '../components/CommentsList';
+
+import AcademicCommentsList from '../components/AcademicCommentsList';
+import ParticipationCommentsList from '../components/ParticipationCommentsList';
+import WellnessCommentsList from '../components/WellnessCommentsList';
+import InnovationCommentsList from '../components/InnovationCommentsList';
 
 class StudentPage extends Component {
   constructor(props) {
@@ -17,7 +21,12 @@ class StudentPage extends Component {
       student: null,
       forum: null,
       loading: true,
-      comments: [],
+      comments: {
+        academic: [],
+        participation: [],
+        wellness: [],
+        innovation: []
+      },
       commentAuthors: []
     };
   }
@@ -52,21 +61,6 @@ class StudentPage extends Component {
       .once('value', snapshot => {
         this.setState({
           forum: snapshot.val(),
-          loading: false
-        });
-      });
-  }
-
-  getCommentsOfStudentFromFirebase() {
-    const studentId = this.props.match.params.id;
-    firebase
-      .database()
-      .ref('comments')
-      .orderByChild('student')
-      .equalTo(studentId)
-      .on('value', snapshot => {
-        this.setState({
-          comments: FirebaseHelper.snapshotToArray(snapshot) || []
         });
       });
   }
@@ -89,19 +83,58 @@ class StudentPage extends Component {
     firebase.database().ref('forums').off();
   }
 
-  commentsByCategory() {
-    const categoryToCommentsMap = {};
-    this.state.comments.forEach(comment => {
-      if (categoryToCommentsMap[comment.category]) {
-        categoryToCommentsMap[comment.category].push(comment)
-      } else {
-        categoryToCommentsMap[comment.category] = [comment];
+  getCommentsOfStudentFromFirebase() {
+    const studentId = this.props.match.params.id;
+    const commentCategories = ['academic', 'participation', 'wellness', 'innovation'];
+    commentCategories.forEach(category => {
+      firebase
+        .database()
+        .ref('comments/' + category)
+        .orderByChild('student')
+        .equalTo(studentId)
+        .on('value', snapshot => {
+          const comments = this.state.comments;
+          comments[category] = FirebaseHelper.snapshotToArray(snapshot) || [];
+          this.setState({
+            comments: comments,
+            loading: false
+          });
+        });
+    });
+  }
+
+  calculateAcademicRating() {
+    let rating = 0;
+    this.state.comments.academic.forEach(comment => {
+      const category = comment.category;
+      if (category === 'Absence') {
+        rating -= 2;
+      } else if (category === 'Late Submission') {
+        rating -= 1;
+      } else if (category === 'No Submission') {
+        rating -= 1;
+      } else if (category === 'Disruptive Behaviour') {
+        rating -= 1;
       }
     });
-    const categories = Object.keys(categoryToCommentsMap);
-    categories.sort();
-    const arrayOfCommentsByCategory = categories.map(category => categoryToCommentsMap[category]);
-    return arrayOfCommentsByCategory;
+    return rating;
+  }
+
+  calculateParticipationRating() {
+    let rating = 0;
+    this.state.comments.participation.forEach(comment => {
+      const category = comment.category;
+      if (category === 'Co-curricular') {
+        rating += 1;
+      } else if (category === 'Mentor') {
+        rating += 1;
+      } else if (category === 'Committee') {
+        rating += 1;
+      } else if (category === 'Community') {
+        rating += 1;
+      }
+    });
+    return rating;
   }
 
   render() {
@@ -143,12 +176,13 @@ class StudentPage extends Component {
                   </Header>
                 </Grid.Column>
                 <Grid.Column textAlign='center'>
-                  <Rating
-                    size='huge'
-                    icon='star'
-                    rating={this.state.student.rating}
-                    maxRating={5}
-                    onRate={(e, data) => this.changeStudentRating(data)} />
+                  <Statistic color='teal'>
+                    <Statistic.Value>
+                      <Icon name='empty star' />
+                      {this.state.student.rating}
+                    </Statistic.Value>
+                    <Statistic.Label>Rating</Statistic.Label>
+                  </Statistic>
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row centered>
@@ -160,25 +194,62 @@ class StudentPage extends Component {
                   createdBy={this.props.user}
                   student={this.state.student}
                 />
-                <WellnessCommentForm
+                <InnovationCommentForm
                   createdBy={this.props.user}
                   student={this.state.student}
                 />
-                <InnovationCommentForm
+                <WellnessCommentForm
                   createdBy={this.props.user}
                   student={this.state.student}
                 />
               </Grid.Row>
             </Grid>
-            {this.commentsByCategory().map((comments, index) => (
-              <Segment key={index}>
-                <Label as='a' color='orange' ribbon>{comments[0].category}</Label>
-                <CommentsList
-                  comments={comments}
-                  user={this.props.user}
-                />
-              </Segment>
-            ))}
+            <Grid columns={3}>
+              <Grid.Row>
+                <Grid.Column>
+                  <Segment>
+                    <Label as='a' color='orange' ribbon>Academic</Label>
+                    <Statistic horizontal size='mini' floated='right' color='red'>
+                      <Statistic.Value>{this.calculateAcademicRating()}</Statistic.Value>
+                      <Statistic.Label>Rating</Statistic.Label>
+                    </Statistic>
+                    <AcademicCommentsList
+                      comments={this.state.comments.academic}
+                      user={this.props.user}
+                    />
+                  </Segment>
+                </Grid.Column>
+                <Grid.Column>
+                  <Segment>
+                    <Label as='a' color='blue' ribbon>Participation</Label>
+                    <Statistic horizontal size='mini' floated='right' color='blue'>
+                      <Statistic.Value>{this.calculateParticipationRating()}</Statistic.Value>
+                      <Statistic.Label>Rating</Statistic.Label>
+                    </Statistic>
+                    <ParticipationCommentsList
+                      comments={this.state.comments.participation}
+                      user={this.props.user}
+                    />
+                  </Segment>
+                </Grid.Column>
+                <Grid.Column>
+                  <Segment>
+                    <Label as='a' color='red' ribbon>Innovation</Label>
+                    <InnovationCommentsList
+                      comments={this.state.comments.innovation}
+                      user={this.props.user}
+                    />
+                  </Segment>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+            <Segment>
+              <Label as='a' color='green' ribbon>Wellness</Label>
+              <WellnessCommentsList
+                comments={this.state.comments.wellness}
+                user={this.props.user}
+              />
+            </Segment>
           </div>
         }
       </div>

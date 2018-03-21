@@ -24,3 +24,11 @@
 .medium-editor-placeholder:after {
     color: #d3d3d3 !important;
 }
+
+.ui.feed>.event>.content .meta {
+    margin: 0;
+}
+
+.ui.feed>.event>.content .extra {
+    margin: 0;
+}
