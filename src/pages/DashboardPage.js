@@ -8,7 +8,8 @@ import moment from 'moment';
 import ForumList from '../components/ForumList';
 import StudentList from '../components/StudentList';
 import ForumForm from '../components/ForumForm';
-import CommentsSummaryList from '../components/CommentsSummaryList';
+import AcademicCommentsSummaryList from '../components/AcademicCommentsSummaryList';
+import InnovationCommentsSummaryList from '../components/InnovationCommentsSummaryList';
 
 class DashboardPage extends Component {
   constructor() {
@@ -16,7 +17,7 @@ class DashboardPage extends Component {
     this.state = {
       forums: [],
       warningStudents: [],
-      comments: [],
+      innovationComments: [],
       attentionRequiredComments: [],
       loading: true
     };
@@ -25,7 +26,7 @@ class DashboardPage extends Component {
   componentWillMount() {
     this.getForumsFromFirebase();
     this.getWarningStudentsFromFirebase();
-    this.getRecentCommentsFromFirebase();
+    this.getInnovationCommentsFromFirebase();
     this.getAttentionRequiredCommentsFromFirebase();
   }
 
@@ -52,7 +53,7 @@ class DashboardPage extends Component {
       .database()
       .ref('students')
       .orderByChild('rating')
-      .endAt(2)
+      .endAt(-1)
       .on('value', snapshot => {
         this.setState({
           warningStudents: FirebaseHelper.snapshotToArray(snapshot) || []
@@ -70,15 +71,15 @@ class DashboardPage extends Component {
     return forumsInYearSortedByLetter;
   }
 
-  getRecentCommentsFromFirebase() {
+  getInnovationCommentsFromFirebase() {
     firebase
       .database()
-      .ref('comments')
+      .ref('comments/innovation')
       .orderByChild('dateUpdated')
-      .startAt(moment().subtract(3, 'd').toISOString())
+      .startAt(moment().subtract(14, 'd').toISOString())
       .on('value', snapshot => {
         this.setState({
-          comments: FirebaseHelper.snapshotToArray(snapshot) || []
+          innovationComments: FirebaseHelper.snapshotToArray(snapshot) || []
         });
       });
   }
@@ -86,7 +87,7 @@ class DashboardPage extends Component {
   getAttentionRequiredCommentsFromFirebase() {
     firebase
       .database()
-      .ref('comments')
+      .ref('comments/wellness')
       .orderByChild('attentionRequired')
       .equalTo(true)
       .on('value', snapshot => {
@@ -131,17 +132,17 @@ class DashboardPage extends Component {
             <Grid.Row>
               <Grid.Column width={6}>
                 <Segment>
-                  <Label as='a' color='green' size='large' ribbon>
+                  <Label as='a' color='blue' size='large' ribbon>
                     First Year Forums
                   </Label>
                   <ForumList forums={this.getForumsInYear(1)} />
                 </Segment>
                 <Segment>
-                  <Label as='a' color='green' size='large' ribbon>Second Year Forums</Label>
+                  <Label as='a' color='blue' size='large' ribbon>Second Year Forums</Label>
                   <ForumList forums={this.getForumsInYear(2)} />
                 </Segment>
                 <Segment>
-                  <Label as='a' color='red' size='large' ribbon>Warning Students</Label>
+                  <Label as='a' color='teal' size='large' ribbon>Warning Students</Label>
                   <StudentList students={this.state.warningStudents} />
                 </Segment>
               </Grid.Column>
@@ -151,22 +152,22 @@ class DashboardPage extends Component {
                     <Link to={'/students'}>View All Students</Link>
                   </Segment>
                   <Segment>
-                    <Label as='a' color='red' size='large' ribbon>
-                      Attention Required
+                    <Label as='a' color='green' size='large' ribbon>
+                      Wellness Issues
                       <Label.Detail>{this.state.attentionRequiredComments.length}</Label.Detail>
                     </Label>
-                    <CommentsSummaryList
+                    <AcademicCommentsSummaryList
                       comments={this.state.attentionRequiredComments}
                       user={this.props.user}
                     />
                   </Segment>
                   <Segment>
-                    <Label as='a' color='orange' size='large' ribbon>
-                      Recent Activity
-                      <Label.Detail>{this.state.comments.length}</Label.Detail>
+                    <Label as='a' color='red' size='large' ribbon>
+                      Innovation Activities
+                      <Label.Detail>{this.state.innovationComments.length}</Label.Detail>
                     </Label>
-                    <CommentsSummaryList
-                      comments={this.state.comments}
+                    <InnovationCommentsSummaryList
+                      comments={this.state.innovationComments}
                       user={this.props.user}
                     />
                   </Segment>

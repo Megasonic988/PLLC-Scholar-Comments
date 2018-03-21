@@ -41,7 +41,6 @@ class App extends Component {
         {this.routeWithUserProps('/students', AllStudentsPage)}
         {this.routeWithUserProps('/students/:id', StudentPage)}
         {this.routeWithUserProps('/comments/:id', CommentPage)}
-        {/* <Route exact path='/comments/:id' component={CommentPage} /> */}
         {this.routeWithUserProps('/404', NotFoundPage)}
         <Redirect to='/404' />
       </Switch>

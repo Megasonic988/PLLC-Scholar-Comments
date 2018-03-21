@@ -1,7 +1,7 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
-import { Modal, Button, Feed, Image } from 'semantic-ui-react';
+import { Modal, Button, Feed, Image, Label } from 'semantic-ui-react';
 import moment from 'moment';
 
 class WellnessCommentFeedEvent extends React.Component {
@@ -40,6 +40,15 @@ class WellnessCommentFeedEvent extends React.Component {
     });
   }
 
+  setAttentionRequiredFalse() {
+    const comment = Object.assign({}, this.props.comment);
+    comment.attentionRequired = false;
+    firebase
+      .database()
+      .ref(`comments/wellness/${this.props.comment.uid}`)
+      .set(comment);
+  }
+
   render() {
     if (!this.state.author) {
       return (
@@ -58,6 +67,17 @@ class WellnessCommentFeedEvent extends React.Component {
             <Feed.Date>
               {moment(this.props.comment.dateCreated).format('MMM Do YYYY')}
             </Feed.Date>
+            {this.props.comment.attentionRequired &&
+              <Label
+                as='a'
+                color='grey'
+                size='mini'
+                tag
+                style={{ left: '6px' }}
+              >
+                Attention Required
+              </Label>
+            }
           </Feed.Summary>
           {this.props.comment.text &&
             <Feed.Extra text>
@@ -69,6 +89,9 @@ class WellnessCommentFeedEvent extends React.Component {
           </Feed.Meta>
           <br />
           <Feed.Meta>
+            {this.props.comment.attentionRequired && 
+              <a onClick={this.setAttentionRequiredFalse.bind(this)}>Resolve</a>
+            }
             <Modal
               trigger={
                 <a onClick={() => this.setState({ deleteConformationOpen: true })}>

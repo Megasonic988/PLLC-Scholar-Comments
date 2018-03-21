@@ -24,7 +24,8 @@ class ForumForm extends Component {
         year: this.state.year,
         letter: this.state.letter,
         name: this.state.name,
-        createdBy: this.props.createdBy
+        createdBy: this.props.createdBy,
+        graduated: false
       });
   }
 
