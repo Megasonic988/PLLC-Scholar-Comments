@@ -5,7 +5,10 @@ import { Button, Image } from 'semantic-ui-react';
 class UserLogin extends Component {
 
   signIn() {
-    var provider = new firebase.auth.GoogleAuthProvider();
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
     firebase.auth().signInWithPopup(provider);
   }
 

@@ -22,6 +22,9 @@ class App extends Component {
       authLoaded: false
     };
     this.auth = firebase.auth();
+  }
+
+  componentDidMount() {
     this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
   }
 
@@ -48,6 +51,8 @@ class App extends Component {
   }
 
   onAuthStateChanged(user) {
+    console.log(user);
+    console.log('ere')
 
     // if successfully logged in via Google, get the user object from the database
     if (user) {
@@ -70,6 +75,18 @@ class App extends Component {
             this.setState({
               user: user
             });
+            firebase
+              .database()
+              .ref(`users/${user.uid}/displayName`)
+              .set(user.displayName);
+            firebase
+              .database()
+              .ref(`users/${user.uid}/photoURL`)
+              .set(user.photoURL);
+            firebase
+              .database()
+              .ref(`users/${user.uid}/email`)
+              .set(user.email);
           }
           this.setState({ authLoaded: true })
         });

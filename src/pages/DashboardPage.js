@@ -123,11 +123,11 @@ class DashboardPage extends Component {
     else {
       return (
         <div style={{ padding: '40px' }}>
-          {!this.userHasCreatedForum() &&
+          {/* {!this.userHasCreatedForum() && // Add Forum */}
             <Grid centered style={{ paddingBottom: '30px' }}>
               <ForumForm createdBy={this.props.user.uid} />
             </Grid>
-          }
+          {/* } */}
           <Grid>
             <Grid.Row>
               <Grid.Column width={6}>

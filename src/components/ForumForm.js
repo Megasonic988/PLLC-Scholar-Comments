@@ -1,6 +1,21 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form, Input } from 'semantic-ui-react';
+import { Button, Modal, Form, Input, Dropdown } from 'semantic-ui-react';
 import * as firebase from 'firebase';
+
+const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+const LETTER_OPTIONS = letters.map(l => {
+  return {
+    text: l,
+    value: l
+  }
+});
+const years = ['1', '2'];
+const YEAR_OPTIONS = years.map(l => {
+  return {
+    text: l,
+    value: l
+  }
+});
 
 class ForumForm extends Component {
   constructor() {
@@ -37,6 +52,9 @@ class ForumForm extends Component {
     });
   }
 
+  handleLetterDropdownChange = (e, { value }) => this.setState({ letter: value })
+  handleYearDropdownChange = (e, { value }) => this.setState({ year: value })
+
   render() {
     return (
       <Modal
@@ -55,11 +73,25 @@ class ForumForm extends Component {
           <Form>
             <Form.Field>
               <label>Year</label>
-              <Input name='year' onChange={this.handleChange.bind(this)} placeholder='e.g. 1, 2...' />
+              <Dropdown
+                placeholder='Select Year'
+                fluid
+                selection
+                name='year'
+                onChange={this.handleYearDropdownChange}
+                options={YEAR_OPTIONS}
+              />
             </Form.Field>
             <Form.Field>
               <label>Letter</label>
-              <Input name='letter' onChange={this.handleChange.bind(this)} placeholder='e.g. A, B...' />
+              <Dropdown
+                placeholder='Select Letter'
+                fluid
+                selection
+                name='letter'
+                onChange={this.handleLetterDropdownChange}
+                options={LETTER_OPTIONS}
+              />
             </Form.Field>
             <Form.Field>
               <label>Name</label>
