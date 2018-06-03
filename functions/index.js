@@ -42,6 +42,7 @@ exports.sendFlaggedWellnessEmailEdited = functions.database.ref('/comments/welln
       };
       return mailTransport.sendMail(mailOptions).then(() => {
         return console.log('New email sent');
+        
       });
     });
   });
