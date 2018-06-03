@@ -67,6 +67,14 @@ class ForumPage extends Component {
       );
     }
 
+    if ((this.state.forum && 
+      (this.state.forum.createdBy !== this.props.user.uid)) && 
+      this.props.user.role !== 'admin') {
+      return (
+        <Redirect to='/permissions' />
+      );
+    }
+
     return (
       <div style={{ padding: '40px' }}>
         {this.state.loading &&

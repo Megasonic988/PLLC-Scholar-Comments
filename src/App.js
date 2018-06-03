@@ -5,6 +5,7 @@ import * as firebase from 'firebase';
 import './App.css';
 
 import UnauthorizedUserPage from './pages/UnauthorizedUserPage';
+import NoPermissionsPage from './pages/NoPermissionsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import WelcomePage from './pages/WelcomePage';
 import ForumPage from './pages/ForumPage';
@@ -44,6 +45,7 @@ class App extends Component {
         {this.routeWithUserProps('/students', AllStudentsPage)}
         {this.routeWithUserProps('/students/:id', StudentPage)}
         {this.routeWithUserProps('/comments/:id', CommentPage)}
+        {this.routeWithUserProps('/permissions', NoPermissionsPage)}
         {this.routeWithUserProps('/404', NotFoundPage)}
         <Redirect to='/404' />
       </Switch>
