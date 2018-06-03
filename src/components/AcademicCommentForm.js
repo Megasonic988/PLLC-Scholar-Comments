@@ -18,6 +18,9 @@ const categories = [{
 }, {
   text: 'Disruptive Behaviour',
   value: 'Disruptive Behaviour'
+}, {
+  text: 'Accommodation',
+  value: 'Accommodation'
 }];
 
 const classes = [{
