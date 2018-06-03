@@ -1,4 +1,4 @@
-# PLLC Scholar Comments
+# Teaching Assistant for Teaching Assistants App | PLLC
 
 This app manages feedback for students in the PLLC, the Peter Lougheed Leadership College at the University of Alberta. It was built with React and is hosted on Firebase.
 

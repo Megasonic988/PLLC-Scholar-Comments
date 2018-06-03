@@ -27,12 +27,12 @@ if (process.env.NODE_ENV === 'development') {
 
 if (process.env.NODE_ENV === 'production') {
   firebaseConfig = {
-    apiKey: "AIzaSyBXnZ3h9ili_spgZtNms1Ig4hF-KWcFx6Q",
-    authDomain: "pllc-scholar-comments.firebaseapp.com",
-    databaseURL: "https://pllc-scholar-comments.firebaseio.com",
-    projectId: "pllc-scholar-comments",
-    storageBucket: "pllc-scholar-comments.appspot.com",
-    messagingSenderId: "695592140683"
+    apiKey: "AIzaSyDaFephL3mkBV4AD2mQW6XBbZ9UXoTumHE",
+    authDomain: "tafta-pllc.firebaseapp.com",
+    databaseURL: "https://tafta-pllc.firebaseio.com",
+    projectId: "tafta-pllc",
+    storageBucket: "",
+    messagingSenderId: "704054740108"
   }
 }
 

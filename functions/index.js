@@ -4,7 +4,6 @@ const nodemailer = require('nodemailer');
 
 admin.initializeApp();
 
-
 const GMAIL_EMAIL = functions.config().gmail.email;
 const GMAIL_PASSWORD = functions.config().gmail.password;
 const mailTransport = nodemailer.createTransport({
@@ -38,11 +37,10 @@ exports.sendFlaggedWellnessEmailEdited = functions.database.ref('/comments/welln
         from: `${APP_NAME} <${GMAIL_EMAIL}>`,
         to: emailRecipients,
         subject: `Flagged Wellness Comment for ${student.name}`,
-        text: `Dear Cristina and ${tf.displayName.split(' ')[0]},\n\nA new wellness comment under category ${comment.category} has been created for ${student.name}. To view this comment, please visit https://tafta-pllc.firebaseapp.com/students/${student.uid}.\n\nThanks,\nTAFTA App`
+        text: `Dear Cristina and ${tf.displayName.split(' ')[0]},\n\nA new wellness comment under category ${comment.category} has been created for ${student.name}. To view this comment, please visit https://tafta-pllc.firebaseapp.com/students/${comment.student}.\n\nThanks,\nTAFTA App`
       };
       return mailTransport.sendMail(mailOptions).then(() => {
         return console.log('New email sent');
-        
       });
     });
   });

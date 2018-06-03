@@ -1,6 +1,33 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
+    "comments": {
+      ".read": "root.child('users').child(auth.uid).child('role').val() != null",
+    	".write": "root.child('users').child(auth.uid).child('role').val() != null"
+    },
+    "forums": {
+      ".read": "root.child('users').child(auth.uid).child('role').val() != null",
+    	".write": "root.child('users').child(auth.uid).child('role').val() != null"
+    },
+    "students": {
+      ".read": "root.child('users').child(auth.uid).child('role').val() != null",
+    	".write": "root.child('users').child(auth.uid).child('role').val() != null"
+    },
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        "displayName": {
+    			".write": "auth != null"
+        },
+        "email": {
+    			".write": "auth != null"
+        },
+        "photoURL": {
+    			".write": "auth != null"
+        },
+        "role": {
+          ".write": "root.child('users').child(auth.uid).child('role').val() == 'admin'"
+        }
+      }
+    }
   }
 }

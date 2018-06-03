@@ -23,7 +23,7 @@ class NavBar extends Component {
           <Menu.Item name="PLLC Student Comments" active={true} onClick={() => this.redirectToHome()}>
             <Header as="h3">
               <Icon name="comments outline"/>
-              PLLC Scholar Comments
+              TAFTA | PLLC
             </Header>
           </Menu.Item>
           <Menu.Item>
