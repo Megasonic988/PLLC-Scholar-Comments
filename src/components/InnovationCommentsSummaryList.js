@@ -1,7 +1,7 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
-import { Feed, Image, Label } from 'semantic-ui-react';
+import { Feed, Image, Label, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
@@ -43,6 +43,15 @@ class InnovationCommentSummaryFeedEvent extends React.Component {
       });
   }
 
+  addLike() {
+    const comment = Object.assign({}, this.props.comment);
+    comment.likes += 1;
+    firebase
+      .database()
+      .ref(`comments/innovation/${this.props.comment.uid}`)
+      .set(comment);
+  }
+
   render() {
     if (!this.state.author) {
       return (
@@ -82,7 +91,10 @@ class InnovationCommentSummaryFeedEvent extends React.Component {
           </Feed.Meta>
           <br/>
           <Feed.Meta>
-            <Link to={`/students/${this.props.comment.student}`}>View Student</Link>
+            <Feed.Like onClick={this.addLike.bind(this)}>
+              <Icon name='like' />
+              {this.props.comment.likes} Like{this.props.comment.likes === 1 ? '' : 's'}
+            </Feed.Like>
           </Feed.Meta>
         </Feed.Content>
       </Feed.Event>

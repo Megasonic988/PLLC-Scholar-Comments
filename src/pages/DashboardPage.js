@@ -124,9 +124,9 @@ class DashboardPage extends Component {
       return (
         <div style={{ padding: '40px' }}>
           {/* {!this.userHasCreatedForum() && // Add Forum */}
-            <Grid centered style={{ paddingBottom: '30px' }}>
-              <ForumForm createdBy={this.props.user.uid} />
-            </Grid>
+          <Grid centered style={{ paddingBottom: '30px' }}>
+            <ForumForm createdBy={this.props.user.uid} />
+          </Grid>
           {/* } */}
           <Grid>
             <Grid.Row>
@@ -141,26 +141,30 @@ class DashboardPage extends Component {
                   <Label as='a' color='blue' size='large' ribbon>Second Year Forums</Label>
                   <ForumList forums={this.getForumsInYear(2)} />
                 </Segment>
-                <Segment>
-                  <Label as='a' color='teal' size='large' ribbon>Warning Students</Label>
-                  <StudentList students={this.state.warningStudents} />
-                </Segment>
+                {this.props.user.role === 'admin' &&
+                  <Segment>
+                    <Label as='a' color='teal' size='large' ribbon>Warning Students</Label>
+                    <StudentList students={this.state.warningStudents} />
+                  </Segment>
+                }
               </Grid.Column>
               <Grid.Column width={10}>
                 <Grid.Row>
                   <Segment style={{ textAlign: 'center' }}>
                     <Link to={'/students'}>View All Students</Link>
                   </Segment>
-                  <Segment>
-                    <Label as='a' color='green' size='large' ribbon>
-                      Wellness Issues
-                      <Label.Detail>{this.state.attentionRequiredComments.length}</Label.Detail>
-                    </Label>
-                    <AcademicCommentsSummaryList
-                      comments={this.state.attentionRequiredComments}
-                      user={this.props.user}
-                    />
-                  </Segment>
+                  {this.props.user.role === 'admin' &&
+                    <Segment>
+                      <Label as='a' color='green' size='large' ribbon>
+                        Wellness Issues
+                        <Label.Detail>{this.state.attentionRequiredComments.length}</Label.Detail>
+                      </Label>
+                      <AcademicCommentsSummaryList
+                        comments={this.state.attentionRequiredComments}
+                        user={this.props.user}
+                      />
+                    </Segment>
+                  }
                   <Segment>
                     <Label as='a' color='red' size='large' ribbon>
                       Innovation Activities
