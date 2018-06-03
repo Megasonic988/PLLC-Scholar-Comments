@@ -76,7 +76,7 @@ class DashboardPage extends Component {
       .database()
       .ref('comments/innovation')
       .orderByChild('dateUpdated')
-      .startAt(moment().subtract(14, 'd').toISOString())
+      .startAt(moment().subtract(30, 'd').toISOString())
       .on('value', snapshot => {
         this.setState({
           innovationComments: FirebaseHelper.snapshotToArray(snapshot) || []
