@@ -53,9 +53,6 @@ class App extends Component {
   }
 
   onAuthStateChanged(user) {
-    console.log(user);
-    console.log('ere')
-
     // if successfully logged in via Google, get the user object from the database
     if (user) {
       firebase

@@ -15,7 +15,7 @@ const mailTransport = nodemailer.createTransport({
 });
 
 const APP_NAME = 'TAFTA | Teaching Assistants for Teaching Assistants App - PLLC';
-const defaultEmailRecipients = ['fe4@ualberta.ca'];
+const defaultEmailRecipients = ['weixiang@ualberta.ca'];
 
 exports.sendFlaggedWellnessEmailEdited = functions.database.ref('/comments/wellness/{commentId}')
   .onCreate((snapshot, context) => {

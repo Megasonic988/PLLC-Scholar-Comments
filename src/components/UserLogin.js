@@ -14,6 +14,7 @@ class UserLogin extends Component {
 
   signOut() {
     firebase.auth().signOut();
+    window.location.assign('https://accounts.google.com/logout');
   }
 
   render() {
