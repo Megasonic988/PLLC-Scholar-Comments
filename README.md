@@ -29,7 +29,7 @@ When the app is deployed locally, the environment variable `NODE_ENV` is set to 
 
 ## App Structure
 
-- The Firebase 
+- The Firebase configuration is located in index.js
 - React Router is used to navigate to pages based on URL. The root routing functionality is implemented in App.js
 - Pages (in src/pages) are composed of components (in src/components)
 
