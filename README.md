@@ -1,6 +1,10 @@
 # Teaching Assistant for Teaching Assistants App | PLLC
 
-This app manages feedback for students in the PLLC, the Peter Lougheed Leadership College at the University of Alberta. It is built with React and uses Firebase for hosting and database functionality. [Video Demo](https://drive.google.com/file/d/0BwCsZcUwkOmBWDVXbFVoQU0tc28/view?usp=sharing)
+This app manages feedback for students in the PLLC, the Peter Lougheed Leadership College at the University of Alberta. It is built with React and uses Firebase for hosting and database functionality.
+
+<kbd>
+  <img src="https://github.com/kevwang1/PLLC-Teaching-Assistant-App/blob/master/src/assets/demo.png">
+ </kbd>
 
 ## Setup
 
