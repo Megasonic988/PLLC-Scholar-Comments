@@ -96,6 +96,12 @@ class AcademicCommentForm extends Component {
 
   handleClassDropdownChange = (e, { value }) => this.setState({ class: value })
 
+  handleClassAddition = (e, { value }) => {
+    this.setState({
+      classes: [{ text: value, value }, ...this.state.classes],
+    })
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.text !== nextState.text) return false;
     else return true;
@@ -128,7 +134,6 @@ class AcademicCommentForm extends Component {
                 placeholder='Select Category'
                 fluid
                 selection
-                allowAdditions
                 search
                 name='category'
                 onChange={this.handleCategoryDropdownChange}
@@ -145,6 +150,7 @@ class AcademicCommentForm extends Component {
                 search
                 name='class'
                 onChange={this.handleClassDropdownChange}
+                onAddItem={this.handleClassAddition}
                 options={this.state.classes}
               />
             </Form.Field>
