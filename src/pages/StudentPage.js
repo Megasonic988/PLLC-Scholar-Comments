@@ -5,12 +5,10 @@ import { Statistic, Grid, Header, Icon, Dimmer, Loader, Segment, Label } from 's
 import { Link, Redirect } from 'react-router-dom';
 
 import AcademicCommentForm from '../components/AcademicCommentForm';
-import ParticipationCommentForm from '../components/ParticipationCommentForm';
 import WellnessCommentForm from '../components/WellnessCommentForm';
 import InnovationCommentForm from '../components/InnovationCommentForm';
 
 import AcademicCommentsList from '../components/AcademicCommentsList';
-import ParticipationCommentsList from '../components/ParticipationCommentsList';
 import WellnessCommentsList from '../components/WellnessCommentsList';
 import InnovationCommentsList from '../components/InnovationCommentsList';
 
@@ -23,7 +21,6 @@ class StudentPage extends Component {
       loading: true,
       comments: {
         academic: [],
-        participation: [],
         wellness: [],
         innovation: []
       },
@@ -85,7 +82,7 @@ class StudentPage extends Component {
 
   getCommentsOfStudentFromFirebase() {
     const studentId = this.props.match.params.id;
-    const commentCategories = ['academic', 'participation', 'wellness', 'innovation'];
+    const commentCategories = ['academic', 'wellness', 'innovation'];
     commentCategories.forEach(category => {
       firebase
         .database()
@@ -120,23 +117,6 @@ class StudentPage extends Component {
     return rating;
   }
 
-  calculateParticipationRating() {
-    let rating = 0;
-    this.state.comments.participation.forEach(comment => {
-      const category = comment.category;
-      if (category === 'Co-curricular') {
-        rating += 1;
-      } else if (category === 'Mentor') {
-        rating += 1;
-      } else if (category === 'Committee') {
-        rating += 1;
-      } else if (category === 'Community') {
-        rating += 1;
-      }
-    });
-    return rating;
-  }
-
   render() {
     if (this.state.notFound) {
       return (
@@ -144,8 +124,8 @@ class StudentPage extends Component {
       );
     }
 
-    if ((this.state.forum && 
-      (this.state.forum.createdBy !== this.props.user.uid)) && 
+    if ((this.state.forum &&
+      (this.state.forum.createdBy !== this.props.user.uid)) &&
       this.props.user.role !== 'admin') {
       return (
         <Redirect to='/permissions' />
@@ -198,10 +178,6 @@ class StudentPage extends Component {
                   createdBy={this.props.user}
                   student={this.state.student}
                 />
-                <ParticipationCommentForm
-                  createdBy={this.props.user}
-                  student={this.state.student}
-                />
                 <InnovationCommentForm
                   createdBy={this.props.user}
                   student={this.state.student}
@@ -229,19 +205,6 @@ class StudentPage extends Component {
                 </Grid.Column>
                 <Grid.Column>
                   <Segment>
-                    <Label as='a' color='blue' ribbon>Participation</Label>
-                    <Statistic horizontal size='mini' floated='right' color='blue'>
-                      <Statistic.Value>{this.calculateParticipationRating()}</Statistic.Value>
-                      <Statistic.Label>Rating</Statistic.Label>
-                    </Statistic>
-                    <ParticipationCommentsList
-                      comments={this.state.comments.participation}
-                      user={this.props.user}
-                    />
-                  </Segment>
-                </Grid.Column>
-                <Grid.Column>
-                  <Segment>
                     <Label as='a' color='red' ribbon>Innovation</Label>
                     <InnovationCommentsList
                       comments={this.state.comments.innovation}
@@ -249,15 +212,17 @@ class StudentPage extends Component {
                     />
                   </Segment>
                 </Grid.Column>
+                <Grid.Column>
+                  <Segment>
+                    <Label as='a' color='green' ribbon>Wellness</Label>
+                    <WellnessCommentsList
+                      comments={this.state.comments.wellness}
+                      user={this.props.user}
+                    />
+                  </Segment>
+                </Grid.Column>
               </Grid.Row>
             </Grid>
-            <Segment>
-              <Label as='a' color='green' ribbon>Wellness</Label>
-              <WellnessCommentsList
-                comments={this.state.comments.wellness}
-                user={this.props.user}
-              />
-            </Segment>
           </div>
         }
       </div>
