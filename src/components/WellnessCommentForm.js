@@ -27,10 +27,10 @@ class WellnessCommentForm extends Component {
   constructor() {
     super();
     this.state = {
+      open: false, // modal property
       text: '',
       category: null,
       attentionRequired: false,
-      open: false,
       categories: categories
     };
   }

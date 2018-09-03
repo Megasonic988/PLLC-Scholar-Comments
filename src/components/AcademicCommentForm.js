@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Form, Dropdown } from 'semantic-ui-react';
+import { Modal, Button, Form, Dropdown, Radio } from 'semantic-ui-react';
 import * as firebase from 'firebase';
 import Editor from 'react-medium-editor';
 import 'medium-editor/dist/css/medium-editor.css';
@@ -44,10 +44,11 @@ class AcademicCommentForm extends Component {
   constructor() {
     super();
     this.state = {
+      open: false, // modal property
       text: '',
       category: null,
       class: null,
-      open: false,
+      attentionRequired: false,
       categories: categories,
       classes: classes
     };
@@ -68,6 +69,7 @@ class AcademicCommentForm extends Component {
         dateUpdated: new Date().toISOString(),
         student: this.props.student.uid,
         createdBy: this.props.createdBy.uid,
+        attentionRequired: this.state.attentionRequired
       });
     const student = Object.assign({}, this.props.student);
     const category = this.state.category;
@@ -89,6 +91,12 @@ class AcademicCommentForm extends Component {
   handleTextChange(text) {
     this.setState({
       text: text
+    });
+  }
+
+  handleRadioChange = () => {
+    this.setState({
+      attentionRequired: !this.state.attentionRequired
     });
   }
 
@@ -152,6 +160,15 @@ class AcademicCommentForm extends Component {
                 onChange={this.handleClassDropdownChange}
                 onAddItem={this.handleClassAddition}
                 options={this.state.classes}
+              />
+            </Form.Field>
+            <Form.Field>
+              <label>Attention Required</label>
+              <Radio
+                toggle
+                checked={this.state.attentionRequired}
+                name='attentionRequired'
+                onChange={this.handleRadioChange}
               />
             </Form.Field>
             <Form.Field>

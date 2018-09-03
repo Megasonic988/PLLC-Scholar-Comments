@@ -8,7 +8,7 @@ import moment from 'moment';
 import ForumList from '../components/ForumList';
 import StudentList from '../components/StudentList';
 import ForumForm from '../components/ForumForm';
-import AcademicCommentsSummaryList from '../components/AcademicCommentsSummaryList';
+import CommentsSummaryList from '../components/CommentsSummaryList';
 import InnovationCommentsSummaryList from '../components/InnovationCommentsSummaryList';
 
 class DashboardPage extends Component {
@@ -18,7 +18,8 @@ class DashboardPage extends Component {
       forums: [],
       warningStudents: [],
       innovationComments: [],
-      attentionRequiredComments: [],
+      wellnessAttentionRequiredComments: [],
+      academicAttentionRequiredComments: [],
       loading: true
     };
   }
@@ -27,7 +28,8 @@ class DashboardPage extends Component {
     this.getForumsFromFirebase();
     this.getWarningStudentsFromFirebase();
     this.getInnovationCommentsFromFirebase();
-    this.getAttentionRequiredCommentsFromFirebase();
+    this.getAcademicAttentionRequiredCommentsFromFirebase();
+    this.getWellnessAttentionRequiredCommentsFromFirebase();
   }
 
   componentWillUnmount() {
@@ -84,7 +86,7 @@ class DashboardPage extends Component {
       });
   }
 
-  getAttentionRequiredCommentsFromFirebase() {
+  getWellnessAttentionRequiredCommentsFromFirebase() {
     firebase
       .database()
       .ref('comments/wellness')
@@ -92,7 +94,20 @@ class DashboardPage extends Component {
       .equalTo(true)
       .on('value', snapshot => {
         this.setState({
-          attentionRequiredComments: FirebaseHelper.snapshotToArray(snapshot) || []
+          wellnessAttentionRequiredComments: FirebaseHelper.snapshotToArray(snapshot) || []
+        });
+      });
+  }
+
+  getAcademicAttentionRequiredCommentsFromFirebase() {
+    firebase
+      .database()
+      .ref('comments/academic')
+      .orderByChild('attentionRequired')
+      .equalTo(true)
+      .on('value', snapshot => {
+        this.setState({
+          academicAttentionRequiredComments: FirebaseHelper.snapshotToArray(snapshot) || []
         });
       });
   }
@@ -157,10 +172,22 @@ class DashboardPage extends Component {
                     <Segment>
                       <Label as='a' color='green' size='large' ribbon>
                         Wellness Issues
-                        <Label.Detail>{this.state.attentionRequiredComments.length}</Label.Detail>
+                        <Label.Detail>{this.state.wellnessAttentionRequiredComments.length}</Label.Detail>
                       </Label>
-                      <AcademicCommentsSummaryList
-                        comments={this.state.attentionRequiredComments}
+                      <CommentsSummaryList
+                        comments={this.state.wellnessAttentionRequiredComments}
+                        user={this.props.user}
+                      />
+                    </Segment>
+                  }
+                  {this.props.user.role === 'admin' &&
+                    <Segment>
+                      <Label as='a' color='orange' size='large' ribbon>
+                        Academic Issues
+                        <Label.Detail>{this.state.academicAttentionRequiredComments.length}</Label.Detail>
+                      </Label>
+                      <CommentsSummaryList
+                        comments={this.state.academicAttentionRequiredComments}
                         user={this.props.user}
                       />
                     </Segment>

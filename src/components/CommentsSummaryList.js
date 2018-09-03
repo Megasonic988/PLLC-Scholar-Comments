@@ -5,7 +5,7 @@ import { Feed, Image, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-class AcademicCommentSummaryFeedEvent extends React.Component {
+class CommentSummaryFeedEvent extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -84,12 +84,12 @@ class AcademicCommentSummaryFeedEvent extends React.Component {
   }
 }
 
-class AcademicCommentsSummaryList extends React.Component {
+class CommentsSummaryList extends React.Component {
   render() {
     return (
       <Feed>
         {this.props.comments.map((comment, index) => (
-          <AcademicCommentSummaryFeedEvent
+          <CommentSummaryFeedEvent
             comment={comment}
             key={index}
             user={this.props.user}
@@ -100,4 +100,4 @@ class AcademicCommentsSummaryList extends React.Component {
   }
 }
 
-export default AcademicCommentsSummaryList;
+export default CommentsSummaryList;

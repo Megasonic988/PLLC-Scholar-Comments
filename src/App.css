@@ -32,3 +32,7 @@
 .ui.feed>.event>.content .extra {
     margin: 0;
 }
+
+body {
+    font-family: 'Helvetica Neue',Arial,Helvetica,sans-serif;
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
-import { Feed, Image } from 'semantic-ui-react';
+import { Feed, Image, Label } from 'semantic-ui-react';
 import moment from 'moment';
 
 class AcademicCommentFeedEvent extends React.Component {
@@ -29,6 +29,15 @@ class AcademicCommentFeedEvent extends React.Component {
       });
   }
 
+  setAttentionRequiredFalse() {
+    const comment = Object.assign({}, this.props.comment);
+    comment.attentionRequired = false;
+    firebase
+      .database()
+      .ref(`comments/wellness/${this.props.comment.uid}`)
+      .set(comment);
+  }
+
   render() {
     if (!this.state.author) {
       return (
@@ -50,6 +59,17 @@ class AcademicCommentFeedEvent extends React.Component {
             <Feed.Date>
               {moment(this.props.comment.dateCreated).format('MMM Do YYYY')}
             </Feed.Date>
+            {this.props.comment.attentionRequired &&
+              <Label
+                as='a'
+                color='grey'
+                size='mini'
+                tag
+                style={{ left: '6px' }}
+              >
+                Attention Required
+              </Label>
+            }
           </Feed.Summary>
           {this.props.comment.text &&
             <Feed.Extra text>
@@ -58,6 +78,12 @@ class AcademicCommentFeedEvent extends React.Component {
           }
           <Feed.Meta>
             Submitted by {this.state.author.displayName}
+          </Feed.Meta>
+          <br/>
+          <Feed.Meta>
+            {this.props.comment.attentionRequired &&
+              <a onClick={this.setAttentionRequiredFalse.bind(this)}>Resolve</a>
+            }
           </Feed.Meta>
         </Feed.Content>
       </Feed.Event>
