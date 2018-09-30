@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form } from 'semantic-ui-react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import * as firebase from 'firebase';
 import Editor from 'react-medium-editor';
 import 'medium-editor/dist/css/medium-editor.css';
@@ -12,7 +14,8 @@ class InnovationCommentForm extends Component {
     this.state = {
       title: '',
       text: '',
-      open: false
+      open: false,
+      dateCreated: moment()
     };
   }
 
@@ -26,8 +29,7 @@ class InnovationCommentForm extends Component {
       .push({
         title: this.state.title,
         text: this.state.text,
-        dateCreated: new Date().toISOString(),
-        dateUpdated: new Date().toISOString(),
+        dateCreated: this.state.dateCreated.toISOString(),
         student: this.props.student.uid,
         createdBy: this.props.createdBy.uid,
         likes: 0
@@ -46,6 +48,12 @@ class InnovationCommentForm extends Component {
   handleTextChange(text) {
     this.setState({
       text: text
+    });
+  }
+
+  handleDateCreatedChange = (date) => {
+    this.setState({
+      dateCreated: date
     });
   }
 
@@ -73,7 +81,10 @@ class InnovationCommentForm extends Component {
           <Form>
             <Form.Field>
               <label>Date</label>
-              <p>{moment(new Date()).format('MMMM Do YYYY')}</p>
+              <DatePicker
+                selected={this.state.dateCreated}
+                onChange={this.handleDateCreatedChange}
+              />
             </Form.Field>
             <Form.Input
               label="Title"

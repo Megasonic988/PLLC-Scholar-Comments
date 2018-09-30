@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Dropdown, Radio } from 'semantic-ui-react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import * as firebase from 'firebase';
 import Editor from 'react-medium-editor';
 import 'medium-editor/dist/css/medium-editor.css';
@@ -56,7 +58,8 @@ class AcademicCommentForm extends Component {
       class: null,
       attentionRequired: false,
       categories: categories,
-      classes: classes
+      classes: classes,
+      dateCreated: moment()
     };
   }
 
@@ -71,8 +74,7 @@ class AcademicCommentForm extends Component {
         text: this.state.text,
         category: this.state.category,
         class: this.state.class,
-        dateCreated: new Date().toISOString(),
-        dateUpdated: new Date().toISOString(),
+        dateCreated: this.state.dateCreated.toISOString(),
         student: this.props.student.uid,
         createdBy: this.props.createdBy.uid,
         attentionRequired: this.state.attentionRequired
@@ -116,6 +118,12 @@ class AcademicCommentForm extends Component {
     })
   }
 
+  handleDateCreatedChange = (date) => {
+    this.setState({
+      dateCreated: date
+    });
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.text !== nextState.text) return false;
     else return true;
@@ -140,7 +148,10 @@ class AcademicCommentForm extends Component {
           <Form>
             <Form.Field>
               <label>Date</label>
-              <p>{moment(new Date()).format('MMMM Do YYYY')}</p>
+              <DatePicker
+                selected={this.state.dateCreated}
+                onChange={this.handleDateCreatedChange}
+              />
             </Form.Field>
             <Form.Field>
               <label>Category</label>

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Dropdown, Radio } from 'semantic-ui-react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import * as firebase from 'firebase';
 import Editor from 'react-medium-editor';
 import 'medium-editor/dist/css/medium-editor.css';
@@ -31,7 +33,8 @@ class WellnessCommentForm extends Component {
       text: '',
       category: null,
       attentionRequired: false,
-      categories: categories
+      categories: categories,
+      dateCreated: moment()
     };
   }
 
@@ -45,8 +48,7 @@ class WellnessCommentForm extends Component {
       .push({
         text: this.state.text,
         category: this.state.category,
-        dateCreated: new Date().toISOString(),
-        dateUpdated: new Date().toISOString(),
+        dateCreated: this.state.dateCreated.toISOString(),
         student: this.props.student.uid,
         createdBy: this.props.createdBy.uid,
         attentionRequired: this.state.attentionRequired
@@ -74,6 +76,12 @@ class WellnessCommentForm extends Component {
     });
   }
 
+  handleDateCreatedChange = (date) => {
+    this.setState({
+      dateCreated: date
+    });
+  }
+
   render() {
     return (
       <Modal
@@ -93,7 +101,10 @@ class WellnessCommentForm extends Component {
           <Form>
             <Form.Field>
               <label>Date</label>
-              <p>{moment(new Date()).format('MMMM Do YYYY')}</p>
+              <DatePicker
+                selected={this.state.dateCreated}
+                onChange={this.handleDateCreatedChange}
+              />
             </Form.Field>
             <Form.Field>
               <label>Category</label>
