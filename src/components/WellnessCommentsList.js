@@ -10,7 +10,7 @@ class WellnessCommentFeedEvent extends React.Component {
     this.state = {
       author: null,
       student: null,
-      deleteConformationOpen: false
+      deleteConfirmationOpen: false
     };
   }
 
@@ -36,7 +36,7 @@ class WellnessCommentFeedEvent extends React.Component {
       .ref(`comments/wellness/${this.props.comment.uid}`)
       .remove();
     this.setState({
-      deleteConformationOpen: false
+      deleteConfirmationOpen: false
     });
   }
 
@@ -94,11 +94,11 @@ class WellnessCommentFeedEvent extends React.Component {
             }
             <Modal
               trigger={
-                <a onClick={() => this.setState({ deleteConformationOpen: true })}>
+                <a onClick={() => this.setState({ deleteConfirmationOpen: true })}>
                   Delete
                 </a>
               }
-              open={this.state.deleteConformationOpen}>
+              open={this.state.deleteConfirmationOpen}>
               <Modal.Header>
                 Confirm Deletion
               </Modal.Header>
@@ -106,7 +106,7 @@ class WellnessCommentFeedEvent extends React.Component {
                 Are you sure you wish to delete this comment? This action cannot be reversed.
               </Modal.Content>
               <Modal.Actions>
-                <Button negative onClick={() => this.setState({ deleteConformationOpen: false })}>
+                <Button negative onClick={() => this.setState({ deleteConfirmationOpen: false })}>
                   No
                 </Button>
                 <Button onClick={this.deleteComment.bind(this)} positive content='Yes' />

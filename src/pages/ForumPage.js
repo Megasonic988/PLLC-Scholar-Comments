@@ -112,7 +112,7 @@ class ForumPage extends Component {
               <Grid.Row>
                 <Card.Group>
                   {this.state.students.map((student, index) => (
-                    <StudentCard key={index} {...student} />
+                    <StudentCard key={index} {...student} user={this.props.user}/>
                   ))}
                 </Card.Group>
               </Grid.Row>

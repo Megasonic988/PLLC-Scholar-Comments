@@ -165,9 +165,11 @@ class DashboardPage extends Component {
               </Grid.Column>
               <Grid.Column width={10}>
                 <Grid.Row>
-                  <Segment style={{ textAlign: 'center' }}>
-                    <Link to={'/students'}>View All Students</Link>
-                  </Segment>
+                  {this.props.user.role === 'admin' &&
+                    <Segment style={{ textAlign: 'center' }}>
+                      <Link to={'/students'}>View All Students</Link>
+                    </Segment>
+                  }
                   {this.props.user.role === 'admin' &&
                     <Segment>
                       <Label as='a' color='green' size='large' ribbon>

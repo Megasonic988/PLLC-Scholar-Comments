@@ -19,14 +19,16 @@ class StudentCard extends React.Component {
             {this.props.CCID}
           </Card.Meta>
         </Card.Content>
-        <Card.Content>
-          <Statistic horizontal size='mini' color='teal'>
-            <Statistic.Value>
-              {this.props.rating}
-            </Statistic.Value>
-            <Statistic.Label>Rating</Statistic.Label>
-          </Statistic>
-        </Card.Content>
+        {this.props.user.role === 'admin' &&
+          <Card.Content>
+            <Statistic horizontal size='mini' color='teal'>
+              <Statistic.Value>
+                {this.props.rating}
+              </Statistic.Value>
+              <Statistic.Label>Rating</Statistic.Label>
+            </Statistic>
+          </Card.Content>
+        }
       </Card>
     );
   }

@@ -15,7 +15,14 @@ const mailTransport = nodemailer.createTransport({
 });
 
 const APP_NAME = 'TAFTA | Teaching Assistants for Teaching Assistants App - PLLC';
-const defaultEmailRecipients = ['weixiang@ualberta.ca'];
+const wellnessDefaultEmailRecipients = ['stasia@ualberta.ca'];
+
+const academicLeadInstructors = {
+  'Foundations of Leadership (INT D 301)': [],
+  'Topics in Leadership (INT D 306)': [],
+  'Capstone in Leadership (INT D 406)': [],
+  'Workshop in Leadership (INT D 407)': []
+}
 
 exports.sendFlaggedWellnessEmail = functions.database.ref('/comments/wellness/{commentId}')
   .onCreate((snapshot) => {
@@ -30,7 +37,7 @@ exports.sendFlaggedWellnessEmail = functions.database.ref('/comments/wellness/{c
     return Promise.all(promises).then(snapshots => {
       const student = snapshots[0].val();
       const tf = snapshots[1].val();
-      const emailRecipients = defaultEmailRecipients.concat(tf.email);
+      const emailRecipients = wellnessDefaultEmailRecipients.concat(tf.email);
       const mailOptions = {
         from: `${APP_NAME} <${GMAIL_EMAIL}>`,
         to: emailRecipients,
@@ -55,7 +62,7 @@ exports.sendResolvedWellnessEmail = functions.database.ref('/comments/wellness/{
       return Promise.all(promises).then(snapshots => {
         const student = snapshots[0].val();
         const tf = snapshots[1].val();
-        const emailRecipients = defaultEmailRecipients.concat(tf.email);
+        const emailRecipients = wellnessDefaultEmailRecipients.concat(tf.email);
         const mailOptions = {
           from: `${APP_NAME} <${GMAIL_EMAIL}>`,
           to: emailRecipients,
@@ -85,6 +92,7 @@ exports.sendFlaggedAcademicEmail = functions.database.ref('/comments/academic/{c
     return Promise.all(promises).then(snapshots => {
       const student = snapshots[0].val();
       const tf = snapshots[1].val();
+      const defaultEmailRecipients = academicLeadInstructors[comment.class] || []
       const emailRecipients = defaultEmailRecipients.concat(tf.email);
       const mailOptions = {
         from: `${APP_NAME} <${GMAIL_EMAIL}>`,
@@ -110,6 +118,7 @@ exports.sendResolvedAcademicEmail = functions.database.ref('/comments/academic/{
       return Promise.all(promises).then(snapshots => {
         const student = snapshots[0].val();
         const tf = snapshots[1].val();
+        const defaultEmailRecipients = academicLeadInstructors[comment.class] || []
         const emailRecipients = defaultEmailRecipients.concat(tf.email);
         const mailOptions = {
           from: `${APP_NAME} <${GMAIL_EMAIL}>`,

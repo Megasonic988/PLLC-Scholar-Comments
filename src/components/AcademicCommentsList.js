@@ -1,7 +1,7 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
-import { Feed, Image, Label } from 'semantic-ui-react';
+import { Feed, Image, Label, Modal, Button } from 'semantic-ui-react';
 import moment from 'moment';
 
 class AcademicCommentFeedEvent extends React.Component {
@@ -9,12 +9,23 @@ class AcademicCommentFeedEvent extends React.Component {
     super();
     this.state = {
       author: null,
-      student: null
+      student: null,
+      deleteConfirmationOpen: false
     };
   }
 
   componentWillMount() {
     this.getAuthorOfCommentFromFirebase();
+  }
+
+  deleteComment() {
+    firebase
+      .database()
+      .ref(`comments/wellness/${this.props.comment.uid}`)
+      .remove();
+    this.setState({
+      deleteConfirmationOpen: false
+    });
   }
 
   getAuthorOfCommentFromFirebase() {
@@ -34,7 +45,7 @@ class AcademicCommentFeedEvent extends React.Component {
     comment.attentionRequired = false;
     firebase
       .database()
-      .ref(`comments/wellness/${this.props.comment.uid}`)
+      .ref(`comments/academic/${this.props.comment.uid}`)
       .set(comment);
   }
 
@@ -84,6 +95,26 @@ class AcademicCommentFeedEvent extends React.Component {
             {this.props.comment.attentionRequired &&
               <a onClick={this.setAttentionRequiredFalse.bind(this)}>Resolve</a>
             }
+            <Modal
+              trigger={
+                <a onClick={() => this.setState({ deleteConfirmationOpen: true })}>
+                  Delete
+                </a>
+              }
+              open={this.state.deleteConfirmationOpen}>
+              <Modal.Header>
+                Confirm Deletion
+              </Modal.Header>
+              <Modal.Content>
+                Are you sure you wish to delete this comment? This action cannot be reversed.
+              </Modal.Content>
+              <Modal.Actions>
+                <Button negative onClick={() => this.setState({ deleteConfirmationOpen: false })}>
+                  No
+                </Button>
+                <Button onClick={this.deleteComment.bind(this)} positive content='Yes' />
+              </Modal.Actions>
+            </Modal>
           </Feed.Meta>
         </Feed.Content>
       </Feed.Event>

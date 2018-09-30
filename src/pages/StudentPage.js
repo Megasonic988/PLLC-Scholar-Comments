@@ -62,19 +62,6 @@ class StudentPage extends Component {
       });
   }
 
-  changeStudentRating(data) {
-    const studentId = this.props.match.params.id;
-    firebase
-      .database()
-      .ref(`students/${studentId}`)
-      .update({
-        rating: data.rating
-      });
-    this.setState({
-      student: Object.assign({}, this.state.student, { rating: data.rating })
-    });
-  }
-
   componentWillUnmount() {
     firebase.database().ref('students').off();
     firebase.database().ref('forums').off();
@@ -163,15 +150,17 @@ class StudentPage extends Component {
                     </Header.Subheader>
                   </Header>
                 </Grid.Column>
-                <Grid.Column textAlign='center'>
-                  <Statistic color='teal'>
-                    <Statistic.Value>
-                      <Icon name='empty star' />
-                      {this.state.student.rating}
-                    </Statistic.Value>
-                    <Statistic.Label>Rating</Statistic.Label>
-                  </Statistic>
-                </Grid.Column>
+                {this.props.user.role === 'admin' &&
+                  <Grid.Column textAlign='center'>
+                    <Statistic color='teal'>
+                      <Statistic.Value>
+                        <Icon name='empty star' />
+                        {this.state.student.rating}
+                      </Statistic.Value>
+                      <Statistic.Label>Rating</Statistic.Label>
+                    </Statistic>
+                  </Grid.Column>
+                }
               </Grid.Row>
               <Grid.Row centered>
                 <AcademicCommentForm
@@ -192,11 +181,13 @@ class StudentPage extends Component {
               <Grid.Row>
                 <Grid.Column>
                   <Segment>
-                    <Label as='a' color='orange' ribbon>Academic</Label>
-                    <Statistic horizontal size='mini' floated='right' color='red'>
-                      <Statistic.Value>{this.calculateAcademicRating()}</Statistic.Value>
-                      <Statistic.Label>Rating</Statistic.Label>
-                    </Statistic>
+                    <Label color='orange' ribbon>Academic</Label>
+                    {this.props.user.role === 'admin' &&
+                      <Statistic horizontal size='mini' floated='right' color='red'>
+                        <Statistic.Value>{this.calculateAcademicRating()}</Statistic.Value>
+                        <Statistic.Label>Rating</Statistic.Label>
+                      </Statistic>
+                    }
                     <AcademicCommentsList
                       comments={this.state.comments.academic}
                       user={this.props.user}
@@ -205,7 +196,7 @@ class StudentPage extends Component {
                 </Grid.Column>
                 <Grid.Column>
                   <Segment>
-                    <Label as='a' color='red' ribbon>Innovation</Label>
+                    <Label color='red' ribbon>Innovation</Label>
                     <InnovationCommentsList
                       comments={this.state.comments.innovation}
                       user={this.props.user}
@@ -214,7 +205,7 @@ class StudentPage extends Component {
                 </Grid.Column>
                 <Grid.Column>
                   <Segment>
-                    <Label as='a' color='green' ribbon>Wellness</Label>
+                    <Label color='green' ribbon>Wellness</Label>
                     <WellnessCommentsList
                       comments={this.state.comments.wellness}
                       user={this.props.user}
