@@ -21,6 +21,9 @@ const categories = [{
 }, {
   text: 'Accommodation',
   value: 'Accommodation'
+}, {
+  text: 'Participation',
+  value: 'Participation'
 }];
 
 const classes = [{
