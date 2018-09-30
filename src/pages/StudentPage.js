@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
-import { Statistic, Grid, Header, Icon, Dimmer, Loader, Segment, Label } from 'semantic-ui-react';
+import { Statistic, Grid, Header, Icon, Dimmer, Loader, Segment, Label, Button } from 'semantic-ui-react';
 import { Link, Redirect } from 'react-router-dom';
 
 import AcademicCommentForm from '../components/AcademicCommentForm';
@@ -11,6 +12,10 @@ import InnovationCommentForm from '../components/InnovationCommentForm';
 import AcademicCommentsList from '../components/AcademicCommentsList';
 import WellnessCommentsList from '../components/WellnessCommentsList';
 import InnovationCommentsList from '../components/InnovationCommentsList';
+
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 class StudentPage extends Component {
   constructor(props) {
@@ -104,6 +109,78 @@ class StudentPage extends Component {
     return rating;
   }
 
+  generatePDFReport = () => {
+    const student = this.state.student;
+    const academicComments = [{text: "Academic\n", style: 'header'}];
+    this.state.comments.academic.forEach(ac => {
+      academicComments.push({text: `${moment(ac.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold'});
+      if (ac.class) {
+        academicComments.push({text: `Class: ${ac.class}\n`});
+      }
+      if (ac.category) {
+        academicComments.push({text: `Category: ${ac.category}\n`})
+      }
+      if (ac.text.length && ac.text.length > 0) {
+        academicComments.push({text: `Details: ${ac.text.replace(/<(?:.|\n)*?>/gm, '')}\n`});
+      }
+      academicComments.push('\n');
+    });
+    const innovationComments = [{text: "Innovation\n", style: 'header'}];
+    this.state.comments.innovation.forEach(ic => {
+      innovationComments.push({text: `${moment(ic.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold'});
+      if (ic.title) {
+        innovationComments.push({text: `Title: ${ic.title}\n`});
+      }
+      if (ic.text.length && ic.text.length > 0) {
+        innovationComments.push({text: `Details: ${ic.text.replace(/<(?:.|\n)*?>/gm, '')}\n`});
+      }
+      innovationComments.push('\n');
+    });
+    const wellnessComments = [{text: "Wellness\n", style: 'header'}];
+    this.state.comments.wellness.forEach(wc => {
+      wellnessComments.push({text: `${moment(wc.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold'});
+      if (wc.category) {
+        wellnessComments.push({text: `Category: ${wc.category}\n`})
+      }
+      if (wc.text.length && wc.text.length > 0) {
+        wellnessComments.push({text: `Details: ${wc.text.replace(/<(?:.|\n)*?>/gm, '')}\n`});
+      }
+      wellnessComments.push('\n');
+    });
+    const docDefinition = {
+      content: [
+        {
+          text: [
+            {text: `PLLC Report for ${student.name}\n`, style: 'header'},
+            `Forum ${this.state.forum.year + this.state.forum.letter}\n`,
+            "Report created " + moment().format('MMMM D, YYYY') + '\n',
+            `TAFTA PLLC App\n\n`,
+          ]
+        }, {
+          text: academicComments
+        }, {
+          text: innovationComments
+        }, {
+          text: wellnessComments
+        }
+      ],
+      styles: {
+        header: {
+          fontSize: 16,
+          bold: true
+        },
+        header2: {
+          fontSize: 13,
+          bold: true
+        },
+        bold: {
+          bold: true
+        }
+      }};
+    const studentNameNoSpace = student.name.split(' ').join('');
+    pdfMake.createPdf(docDefinition).download(`PLLC_${studentNameNoSpace}_Report_${moment().format('MM-DD-YYYY')}`);
+  }
+
   render() {
     if (this.state.notFound) {
       return (
@@ -147,6 +224,15 @@ class StudentPage extends Component {
                       <Link to={`/forums/${this.state.student.forum}`}>
                         Forum {this.state.forum.year + this.state.forum.letter}
                       </Link>
+                    </Header.Subheader>
+                    <Header.Subheader>
+                      <br/>
+                      <Button
+                        compact
+                        size='tiny'
+                        onClick={this.generatePDFReport}>
+                        Generate PDF Report
+                      </Button>
                     </Header.Subheader>
                   </Header>
                 </Grid.Column>
