@@ -125,6 +125,7 @@ class StudentPage extends Component {
       }
       academicComments.push('\n');
     });
+    academicComments.push('\n');
     const innovationComments = [{text: "Innovation\n", style: 'header'}];
     this.state.comments.innovation.forEach(ic => {
       innovationComments.push({text: `${moment(ic.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold'});
@@ -136,6 +137,7 @@ class StudentPage extends Component {
       }
       innovationComments.push('\n');
     });
+    innovationComments.push('\n');
     const wellnessComments = [{text: "Wellness\n", style: 'header'}];
     this.state.comments.wellness.forEach(wc => {
       wellnessComments.push({text: `${moment(wc.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold'});
@@ -147,14 +149,15 @@ class StudentPage extends Component {
       }
       wellnessComments.push('\n');
     });
+    wellnessComments.push('\n');
     const docDefinition = {
       content: [
         {
           text: [
             {text: `PLLC Report for ${student.name}\n`, style: 'header'},
             `Forum ${this.state.forum.year + this.state.forum.letter}\n`,
-            "Report created " + moment().format('MMMM D, YYYY') + '\n',
-            `TAFTA PLLC App\n\n`,
+            "Created " + moment().format('MMMM D, YYYY') + '\n',
+            `TAFTA PLLC App\n\n\n`,
           ]
         }, {
           text: academicComments
