@@ -43,9 +43,6 @@ const classes = [{
 }, {
   text: 'Workshop in Leadership (INT D 407)',
   value: 'Workshop in Leadership (INT D 407)'
-}, {
-  text: 'Workshop',
-  value: 'Workshop'
 }];
 
 class AcademicCommentForm extends Component {
@@ -55,6 +52,7 @@ class AcademicCommentForm extends Component {
       open: false, // modal property
       text: '',
       category: null,
+      notifiedOfAbsence: false,
       class: null,
       attentionRequired: false,
       categories: categories,
@@ -67,11 +65,16 @@ class AcademicCommentForm extends Component {
     this.setState({
       open: false
     });
+    let text = this.state.text;
+    if (this.state.category === 'Absence') {
+      const absText = `<b>TF was ${this.state.notifiedOfAbsence ? '' : 'not'} notified of absence. </b>`;
+      text = absText + text;
+    }
     firebase
       .database()
       .ref('comments/academic')
       .push({
-        text: this.state.text,
+        text: text,
         category: this.state.category,
         class: this.state.class,
         dateCreated: this.state.dateCreated.toISOString(),
@@ -86,8 +89,10 @@ class AcademicCommentForm extends Component {
     } else if (category === 'Late Submission') {
       student.rating -= 1;
     } else if (category === 'No Submission') {
-      student.rating -= 1;
+      student.rating -= 5;
     } else if (category === 'Disruptive Behaviour') {
+      student.rating -= 1;
+    } else if (category === 'Accommodation') {
       student.rating -= 1;
     }
     firebase
@@ -102,7 +107,13 @@ class AcademicCommentForm extends Component {
     });
   }
 
-  handleRadioChange = () => {
+  handleNotifiedOfAbsenceRadioChange = () => {
+    this.setState({
+      notifiedOfAbsence: !this.state.notifiedOfAbsence
+    });
+  }
+
+  handleAttentionRequiredRadioChange = () => {
     this.setState({
       attentionRequired: !this.state.attentionRequired
     });
@@ -165,6 +176,17 @@ class AcademicCommentForm extends Component {
                 options={this.state.categories}
               />
             </Form.Field>
+            {this.state.category === 'Absence' &&
+              <Form.Field>
+                <label>Notified of Absence</label>
+                <Radio
+                  toggle
+                  checked={this.state.notifiedOfAbsence}
+                  name='notifiedOfAbsence'
+                  onChange={this.handleNotifiedOfAbsenceRadioChange}
+                />
+              </Form.Field>
+            }
             <Form.Field>
               <label>Class</label>
               <Dropdown
@@ -185,7 +207,7 @@ class AcademicCommentForm extends Component {
                 toggle
                 checked={this.state.attentionRequired}
                 name='attentionRequired'
-                onChange={this.handleRadioChange}
+                onChange={this.handleAttentionRequiredRadioChange}
               />
             </Form.Field>
             <Form.Field>

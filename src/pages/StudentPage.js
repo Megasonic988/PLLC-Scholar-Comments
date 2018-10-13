@@ -111,41 +111,41 @@ class StudentPage extends Component {
 
   generatePDFReport = () => {
     const student = this.state.student;
-    const academicComments = [{text: "Academic\n", style: 'header'}];
+    const academicComments = [{ text: "Academic\n", style: 'header' }];
     this.state.comments.academic.forEach(ac => {
-      academicComments.push({text: `${moment(ac.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold'});
+      academicComments.push({ text: `${moment(ac.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold' });
       if (ac.class) {
-        academicComments.push({text: `Class: ${ac.class}\n`});
+        academicComments.push({ text: `Class: ${ac.class}\n` });
       }
       if (ac.category) {
-        academicComments.push({text: `Category: ${ac.category}\n`})
+        academicComments.push({ text: `Category: ${ac.category}\n` })
       }
       if (ac.text.length && ac.text.length > 0) {
-        academicComments.push({text: `Details: ${ac.text.replace(/<(?:.|\n)*?>/gm, '')}\n`});
+        academicComments.push({ text: `Details: ${ac.text.replace(/<(?:.|\n)*?>/gm, '')}\n` });
       }
       academicComments.push('\n');
     });
     academicComments.push('\n');
-    const innovationComments = [{text: "Innovation\n", style: 'header'}];
+    const innovationComments = [{ text: "Innovation\n", style: 'header' }];
     this.state.comments.innovation.forEach(ic => {
-      innovationComments.push({text: `${moment(ic.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold'});
+      innovationComments.push({ text: `${moment(ic.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold' });
       if (ic.title) {
-        innovationComments.push({text: `Title: ${ic.title}\n`});
+        innovationComments.push({ text: `Title: ${ic.title}\n` });
       }
       if (ic.text.length && ic.text.length > 0) {
-        innovationComments.push({text: `Details: ${ic.text.replace(/<(?:.|\n)*?>/gm, '')}\n`});
+        innovationComments.push({ text: `Details: ${ic.text.replace(/<(?:.|\n)*?>/gm, '')}\n` });
       }
       innovationComments.push('\n');
     });
     innovationComments.push('\n');
-    const wellnessComments = [{text: "Wellness\n", style: 'header'}];
+    const wellnessComments = [{ text: "Wellness\n", style: 'header' }];
     this.state.comments.wellness.forEach(wc => {
-      wellnessComments.push({text: `${moment(wc.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold'});
+      wellnessComments.push({ text: `${moment(wc.dateCreated).format('MMMM D, YYYY')}\n`, style: 'bold' });
       if (wc.category) {
-        wellnessComments.push({text: `Category: ${wc.category}\n`})
+        wellnessComments.push({ text: `Category: ${wc.category}\n` })
       }
       if (wc.text.length && wc.text.length > 0) {
-        wellnessComments.push({text: `Details: ${wc.text.replace(/<(?:.|\n)*?>/gm, '')}\n`});
+        wellnessComments.push({ text: `Details: ${wc.text.replace(/<(?:.|\n)*?>/gm, '')}\n` });
       }
       wellnessComments.push('\n');
     });
@@ -154,7 +154,7 @@ class StudentPage extends Component {
       content: [
         {
           text: [
-            {text: `PLLC Report for ${student.name}\n`, style: 'header'},
+            { text: `PLLC Report for ${student.name}\n`, style: 'header' },
             `Forum ${this.state.forum.year + this.state.forum.letter}\n`,
             "Created " + moment().format('MMMM D, YYYY') + '\n',
             `TAFTA PLLC App\n\n\n`,
@@ -179,7 +179,8 @@ class StudentPage extends Component {
         bold: {
           bold: true
         }
-      }};
+      }
+    };
     const studentNameNoSpace = student.name.split(' ').join('');
     pdfMake.createPdf(docDefinition).download(`PLLC_${studentNameNoSpace}_Report_${moment().format('MM-DD-YYYY')}`);
   }
@@ -228,15 +229,17 @@ class StudentPage extends Component {
                         Forum {this.state.forum.year + this.state.forum.letter}
                       </Link>
                     </Header.Subheader>
-                    <Header.Subheader>
-                      <br/>
-                      <Button
-                        compact
-                        size='tiny'
-                        onClick={this.generatePDFReport}>
-                        Generate PDF Report
-                      </Button>
-                    </Header.Subheader>
+                    {this.props.user.role === 'admin' &&
+                      <Header.Subheader>
+                        <br />
+                        <Button
+                          compact
+                          size='tiny'
+                          onClick={this.generatePDFReport}>
+                          Generate PDF Report
+                        </Button>
+                      </Header.Subheader>
+                    }
                   </Header>
                 </Grid.Column>
                 {this.props.user.role === 'admin' &&

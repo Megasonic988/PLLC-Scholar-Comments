@@ -21,7 +21,7 @@ class AcademicCommentFeedEvent extends React.Component {
   deleteComment() {
     firebase
       .database()
-      .ref(`comments/wellness/${this.props.comment.uid}`)
+      .ref(`comments/academic/${this.props.comment.uid}`)
       .remove();
     this.setState({
       deleteConfirmationOpen: false

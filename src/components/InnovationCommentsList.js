@@ -1,7 +1,7 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import * as FirebaseHelper from '../FirebaseHelper';
-import { Feed, Icon, Image } from 'semantic-ui-react';
+import { Feed, Icon, Image, Modal, Button } from 'semantic-ui-react';
 import moment from 'moment';
 
 class InnovationCommentFeedEvent extends React.Component {
@@ -9,12 +9,23 @@ class InnovationCommentFeedEvent extends React.Component {
     super();
     this.state = {
       author: null,
-      student: null
+      student: null,
+      deleteConfirmationOpen: false
     };
   }
 
   componentWillMount() {
     this.getAuthorOfCommentFromFirebase();
+  }
+
+  deleteComment() {
+    firebase
+      .database()
+      .ref(`comments/innovation/${this.props.comment.uid}`)
+      .remove();
+    this.setState({
+      deleteConfirmationOpen: false
+    });
   }
 
   getAuthorOfCommentFromFirebase() {
@@ -71,6 +82,29 @@ class InnovationCommentFeedEvent extends React.Component {
               <Icon name='like' />
               {this.props.comment.likes} Like{this.props.comment.likes === 1 ? '' : 's'}
             </Feed.Like>
+          </Feed.Meta>
+          <br />
+          <Feed.Meta>
+            <Modal
+              trigger={
+                <a onClick={() => this.setState({ deleteConfirmationOpen: true })}>
+                  Delete
+                </a>
+              }
+              open={this.state.deleteConfirmationOpen}>
+              <Modal.Header>
+                Confirm Deletion
+              </Modal.Header>
+              <Modal.Content>
+                Are you sure you wish to delete this comment? This action cannot be reversed.
+              </Modal.Content>
+              <Modal.Actions>
+                <Button negative onClick={() => this.setState({ deleteConfirmationOpen: false })}>
+                  No
+                </Button>
+                <Button onClick={this.deleteComment.bind(this)} positive content='Yes' />
+              </Modal.Actions>
+            </Modal>
           </Feed.Meta>
         </Feed.Content>
       </Feed.Event>
