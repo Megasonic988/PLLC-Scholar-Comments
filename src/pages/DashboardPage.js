@@ -77,7 +77,7 @@ class DashboardPage extends Component {
     firebase
       .database()
       .ref('comments/innovation')
-      .orderByChild('dateUpdated')
+      .orderByChild('dateCreated')
       .startAt(moment().subtract(30, 'd').toISOString())
       .on('value', snapshot => {
         this.setState({
