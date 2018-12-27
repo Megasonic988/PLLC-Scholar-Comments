@@ -4,6 +4,8 @@ import * as FirebaseHelper from '../FirebaseHelper';
 import { Modal, Button, Feed, Image, Label } from 'semantic-ui-react';
 import moment from 'moment';
 
+import WellnessCommentEditForm from './WellnessCommentEditForm';
+
 class WellnessCommentFeedEvent extends React.Component {
   constructor() {
     super();
@@ -112,6 +114,13 @@ class WellnessCommentFeedEvent extends React.Component {
                 <Button onClick={this.deleteComment.bind(this)} positive content='Yes' />
               </Modal.Actions>
             </Modal>
+            {this.props.student &&
+              <WellnessCommentEditForm
+                createdBy={this.props.user}
+                student={this.props.student}
+                comment={this.props.comment}
+              />
+            }
           </Feed.Meta>
         </Feed.Content>
       </Feed.Event>
@@ -128,6 +137,7 @@ class WellnessCommentsList extends React.Component {
             comment={comment}
             key={index}
             user={this.props.user}
+            student={this.props.student}
           />
         ))}
       </Feed>

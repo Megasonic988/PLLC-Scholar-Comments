@@ -4,12 +4,13 @@ import * as FirebaseHelper from '../FirebaseHelper';
 import { Feed, Image, Label, Modal, Button } from 'semantic-ui-react';
 import moment from 'moment';
 
+import AcademicCommentEditForm from './AcademicCommentEditForm';
+
 class AcademicCommentFeedEvent extends React.Component {
   constructor() {
     super();
     this.state = {
       author: null,
-      student: null,
       deleteConfirmationOpen: false
     };
   }
@@ -90,7 +91,7 @@ class AcademicCommentFeedEvent extends React.Component {
           <Feed.Meta>
             Submitted by {this.state.author.displayName}
           </Feed.Meta>
-          <br/>
+          <br />
           <Feed.Meta>
             {this.props.comment.attentionRequired &&
               <a onClick={this.setAttentionRequiredFalse.bind(this)}>Resolve</a>
@@ -115,6 +116,13 @@ class AcademicCommentFeedEvent extends React.Component {
                 <Button onClick={this.deleteComment.bind(this)} positive content='Yes' />
               </Modal.Actions>
             </Modal>
+            {this.props.student &&
+              <AcademicCommentEditForm
+                createdBy={this.props.user}
+                student={this.props.student}
+                comment={this.props.comment}
+              />
+            }
           </Feed.Meta>
         </Feed.Content>
       </Feed.Event>
@@ -132,6 +140,7 @@ class AcademicCommentsList extends React.Component {
             comment={comment}
             key={index}
             user={this.props.user}
+            student={this.props.student}
           />
         ))}
       </Feed>

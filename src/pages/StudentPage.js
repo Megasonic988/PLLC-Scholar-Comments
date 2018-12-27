@@ -283,6 +283,7 @@ class StudentPage extends Component {
                     <AcademicCommentsList
                       comments={this.state.comments.academic}
                       user={this.props.user}
+                      student={this.state.student}
                     />
                   </Segment>
                 </Grid.Column>
@@ -292,6 +293,7 @@ class StudentPage extends Component {
                     <InnovationCommentsList
                       comments={this.state.comments.innovation}
                       user={this.props.user}
+                      student={this.state.student}
                     />
                   </Segment>
                 </Grid.Column>
@@ -301,6 +303,7 @@ class StudentPage extends Component {
                     <WellnessCommentsList
                       comments={this.state.comments.wellness}
                       user={this.props.user}
+                      student={this.state.student}
                     />
                   </Segment>
                 </Grid.Column>
