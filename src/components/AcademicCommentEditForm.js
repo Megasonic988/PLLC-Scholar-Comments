@@ -81,17 +81,6 @@ class AcademicCommentEditForm extends Component {
       });
     const student = Object.assign({}, this.props.student);
     const category = this.state.category;
-    if (category === 'Absence') {
-      student.rating -= 2;
-    } else if (category === 'Late Submission') {
-      student.rating -= 1;
-    } else if (category === 'No Submission') {
-      student.rating -= 5;
-    } else if (category === 'Disruptive Behaviour') {
-      student.rating -= 1;
-    } else if (category === 'Accommodation') {
-      student.rating -= 1;
-    }
     firebase
       .database()
       .ref(`students/${this.props.student.uid}`)
