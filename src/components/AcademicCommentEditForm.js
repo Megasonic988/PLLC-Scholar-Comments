@@ -83,7 +83,6 @@ class AcademicCommentEditForm extends Component {
         attentionRequired: this.state.attentionRequired
       });
     const student = Object.assign({}, this.props.student);
-    const category = this.state.category;
     firebase
       .database()
       .ref(`students/${this.props.student.uid}`)
