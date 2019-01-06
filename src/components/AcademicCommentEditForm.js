@@ -24,8 +24,11 @@ const categories = [{
   text: 'Accommodation',
   value: 'Accommodation'
 }, {
-  text: 'Participation',
-  value: 'Participation'
+  text: 'Participation (Good)',
+  value: 'Participation (Good)'
+}, {
+  text: 'Participation (Poor)',
+  value: 'Participation (Poor)'
 }, {
   text: 'Other',
   value: 'Other'

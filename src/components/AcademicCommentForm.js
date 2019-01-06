@@ -24,8 +24,11 @@ const categories = [{
   text: 'Accommodation',
   value: 'Accommodation'
 }, {
-  text: 'Participation',
-  value: 'Participation'
+  text: 'Participation (Good)',
+  value: 'Participation (Good)'
+}, {
+  text: 'Participation (Poor)',
+  value: 'Participation (Poor)'
 }, {
   text: 'Other',
   value: 'Other'
@@ -93,6 +96,10 @@ class AcademicCommentForm extends Component {
     } else if (category === 'Disruptive Behaviour') {
       student.rating -= 1;
     } else if (category === 'Accommodation') {
+      student.rating -= 1;
+    } else if (category === 'Participation (Good)') {
+      student.rating += 1;
+    } else if (category === 'Participation (Poor)') {
       student.rating -= 1;
     }
     firebase
